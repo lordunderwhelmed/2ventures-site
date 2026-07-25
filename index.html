@@ -67,6 +67,12 @@
   @supports not (background-clip:text){
     .kw-frame{color:#f4f2ec;-webkit-text-fill-color:#f4f2ec;background-image:none !important}
   }
+  /* mobile: UNMANNED / AUTONOMY / PROCUREMENT / DOMINANCE were overflowing and clipping
+     at both viewport edges — the clamp() max was sized for desktop widths; cap it lower
+     and widen the side padding so the longest word (PROCUREMENT) fits inside 390px */
+  @media (max-width:767px){
+    .kw-frame{font-size:clamp(40px,13vw,72px);padding:0 6vw;-webkit-text-stroke:1px rgba(244,242,236,.22)}
+  }
   .intro-caption{position:absolute;left:0;right:0;bottom:clamp(28px,6vw,64px);display:flex;flex-direction:column;align-items:center;gap:10px;color:#f4f2ec;z-index:2;text-align:center}
   .intro-quote{font-size:clamp(13px,1.5vw,16px);line-height:1.55;max-width:58ch;opacity:.92;padding:0 16px}
   /* lead quote: sits up near the giant words, above the name tag (Marc's placement) */
@@ -109,16 +115,22 @@
   .nav a:hover,.nav a.active{color:var(--ink)}
   @media (max-width:640px){.brand span{display:none}}
 
-  /* ---------- mobile header: brand row + a slim scrollable nav row (no wrap, no hamburger) ---------- */
+  /* ---------- mobile header: brand row + a hamburger-triggered dropdown (replaces the
+     clipped horizontally-scrolling nav row, which had no way to reach every item) ---------- */
+  .nav-toggle{display:none}
   @media (max-width:767px){
-    .nav{flex-wrap:nowrap;flex-direction:column;align-items:stretch;gap:9px;padding:14px 0 10px}
-    .nav ul{
-      flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
-      gap:18px;padding:0 16px 1px;scroll-padding-inline:16px;scrollbar-width:none;-ms-overflow-style:none;
-      mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);
+    .nav{flex-wrap:nowrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
+    .nav-toggle{
+      display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:44px;height:44px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;flex:0 0 auto;
     }
-    .nav ul::-webkit-scrollbar{display:none}
-    .nav a{white-space:nowrap;font-size:12px}
+    .nav-toggle span{display:block;width:20px;height:1.5px;background:var(--ink)}
+    .nav ul{
+      display:none;flex-direction:column;flex-wrap:nowrap;gap:0;
+      width:100%;padding:6px 0 4px;margin-top:8px;border-top:1px solid var(--line);
+    }
+    .nav ul.open{display:flex}
+    .nav a{white-space:nowrap;font-size:14px;display:flex;align-items:center;min-height:44px}
   }
 
   /* ---------- intro statement ---------- */
@@ -133,22 +145,30 @@
      list; 6 kinetic spacers drive the giant scrub-masked headline words
      (kinetic-stage), continuously scrubbed rather than switched on toggle.
      ===================================================================== */
-  .rail{position:relative;padding-top:20vh;padding-bottom:18vh}
-  .spacer[data-row="0"]{height:45vh}
+  /* desktop rail runway cut to ~1/3 of its prior length (was 20vh/18vh/45vh/140px/280px) —
+     same pinned nav + scrubbing quotes, delivered over far less dead scroll distance.
+     (The show/hide ScrollTrigger below now uses 'top bottom'/'bottom top', whose active
+     window is railHeight+viewportHeight — always positive regardless of rail length —
+     so this no longer needs to stay taller than the viewport to work correctly.) */
+  .rail{position:relative;padding-top:4vh;padding-bottom:3vh}
+  .spacer[data-row="0"]{height:7vh}
   .spacer{height:80px}
-  @media (min-width:768px){.spacer{height:140px}}
+  @media (min-width:768px){.spacer{height:28px}}
   .spacer.spacer--kinetic{height:170px}
-  @media (min-width:768px){.spacer.spacer--kinetic{height:280px}}
-  .spacer.spacer--kinetic-lead{height:45vh}
-  /* mobile: rail-side quotes are display:none below 768px (no room for the fixed side
-     column), so the only thing filling these zones is the pinned nav word + giant kinetic
-     word — compact the spacers hard so the rail reads as a fast scrub, not empty screens */
+  @media (min-width:768px){.spacer.spacer--kinetic{height:50px}}
+  .spacer.spacer--kinetic-lead{height:7vh}
+  /* mobile: the pinned ghost nav (.menu-list) and the kinetic word scrub (.kinetic-stage)
+     are both position:fixed overlays that never reserve their own scroll space — the
+     .rail spacers below were sized to give THEM room to scrub, but on mobile those
+     overlays are hidden (see .menu-list / .kinetic-stage mobile rules) and replaced by
+     the inline .rail-mobile-quotes cards, so the spacers collapse to a minimal amount
+     of breathing room instead of reserving several empty screens. */
   @media (max-width:767px){
-    .rail{padding-top:8vh;padding-bottom:8vh}
-    .spacer[data-row="0"]{height:26vh}
-    .spacer{height:48px}
-    .spacer.spacer--kinetic{height:110px}
-    .spacer.spacer--kinetic-lead{height:20vh}
+    .rail{padding-top:1vh;padding-bottom:1vh}
+    .spacer[data-row="0"]{height:4vh}
+    .spacer{height:8px}
+    .spacer.spacer--kinetic{height:8px}
+    .spacer.spacer--kinetic-lead{height:2vh}
   }
   /* Writing quote: same centered position + format as the other rail quotes (Marc) */
   .rail-side[data-idx="4"] p{font-size:clamp(18px,2vw,26px)}
@@ -160,6 +180,9 @@
   }
   .menu-list.visible{opacity:1}
   @media (min-width:768px){.menu-list{left:18%}}
+  /* ghost menu: fixed, mix-blend-mode:difference, unreachable on touch (looks like
+     nav, cannot be tapped reliably) — replaced on mobile by the real hamburger nav */
+  @media (max-width:767px){.menu-list{display:none}}
   .item{display:table;height:2.25rem;font-size:1.4rem;line-height:2.25rem;font-weight:400;white-space:nowrap;color:var(--menu-text);pointer-events:none;cursor:pointer;margin-bottom:.6rem;transition:height .1s cubic-bezier(.25,.46,.45,.94)}
   .menu-list.visible .item{pointer-events:all}
   @media (min-width:768px){.item{height:2.5rem;font-size:1.875rem;margin-bottom:.85rem}}
@@ -168,6 +191,10 @@
 
   .kinetic-stage{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .2s ease}
   .kinetic-stage.visible{opacity:1}
+  /* mobile: the fixed-position word scrub reserves no scroll space of its own and the
+     rail spacers driving it are collapsed above — dropped on mobile in favour of the
+     inline .rail-mobile-quotes cards (same underlying quotes, always visible, tappable) */
+  @media (max-width:767px){.kinetic-stage{display:none}}
   .kw-row{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.4vw,18px);opacity:0;pointer-events:none;will-change:clip-path,opacity,transform;padding:0 6vw;text-align:center}
   .kinetic-stage.visible .kw-row.active{pointer-events:all}
   .kw-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);opacity:0;transition:opacity .3s ease}
@@ -191,6 +218,17 @@
   .rail-side.visible{opacity:1}
   @media (max-width:767px){.rail-side{display:none}}
   @media (min-width:768px){.statement{display:none}}
+
+  /* mobile-only: same quote content as the desktop .rail-side overlay (data-idx 1,2,4 —
+     idx 0 already renders inline via .statement above), shown as plain readable cards
+     instead of a fixed pinned overlay that only ever appeared during a scroll-scrub */
+  .rail-mobile-quotes{display:none}
+  @media (max-width:767px){
+    .rail-mobile-quotes{display:grid;gap:14px;padding:22px clamp(16px,3vw,40px) 6px}
+    .rail-mobile-quotes .rmq-card{padding:16px 18px;border:1px solid var(--line);border-radius:2px}
+    .rail-mobile-quotes .rmq-card p{font-size:14.5px;line-height:1.55;color:var(--ink)}
+    .rail-mobile-quotes .rmq-card p .mut{color:var(--mut);display:block;margin-top:6px;font-size:13px}
+  }
 
   .scroll-hint{pointer-events:none;position:fixed;left:12.5%;bottom:8vh;color:var(--menu-text);font-size:1.1rem;display:flex;align-items:center;gap:.4rem;mix-blend-mode:difference;opacity:0;transition:opacity .3s ease;z-index:10}
   @media (min-width:768px){.scroll-hint{left:18%}}
@@ -281,7 +319,9 @@
   .photo-row figure{margin:0}
   .photo-row img{width:100%;height:clamp(180px,17vw,260px);object-fit:cover;object-position:center;border-radius:2px}
   @media (max-width:900px){.photo-row{grid-template-columns:1fr 1fr}.photo-row img{height:clamp(200px,24vw,280px)}}
-  @media (max-width:640px){.photo-row{grid-template-columns:1fr}.photo-row img{height:clamp(240px,60vw,300px)}}
+  /* mobile: object-position:center was cropping the top of the head on the tall single-column
+     aspect ratio these photos take at phone widths; bias the crop upward instead */
+  @media (max-width:640px){.photo-row{grid-template-columns:1fr}.photo-row img{height:clamp(240px,60vw,300px);object-position:50% 18%}}
 
   /* ---------- press: scroll-scrubbed split — left outlet rail scrolls in place while the
        card track advances right-to-left, mirroring the top-of-page rail mechanic ---------- */
@@ -395,6 +435,7 @@
 <header>
   <div class="wrap nav">
     <a class="brand" href="#top" data-goto="#top"><img src="img/logos/2v.png" alt="2 Ventures" onerror="this.style.display='none'">Marc C Lange<span>2 Ventures</span></a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span></span><span></span><span></span></button>
     <ul id="navlinks">
       <li><a href="#about" data-goto="#about">About</a></li>
       <li><a href="#advisory" data-goto="#advisory">Advisory</a></li>
@@ -498,6 +539,20 @@
     <span class="mut">Author of TECH WARS. 20 years in technology leadership, more than 10 in aerospace, defense, and AI.</span></h1>
   </section>
 
+  <!-- mobile: same 3 remaining quotes the desktop .rail-side overlay shows during the
+       scroll-scrub (data-idx 0's quote is already inline above via .statement) -->
+  <div class="rail-mobile-quotes">
+    <div class="rmq-card">
+      <p>"A must-read analyst for any European nation working to catch up to the realities of modern warfare."<span class="mut">— Perry Boyle, CEO &amp; Co-Founder, MITS Capital</span></p>
+    </div>
+    <div class="rmq-card">
+      <p>"...the best commentary I've seen on drone tech &amp; warfare..."<span class="mut">— a financial portfolio manager</span></p>
+    </div>
+    <div class="rmq-card">
+      <p>"I'm reading your newsletter with growing attention and enthusiasm."<span class="mut">— a four-star NATO General</span></p>
+    </div>
+  </div>
+
   <!-- About (moved before TECH WARS per Marc's round-1 feedback) -->
   <section class="sec" id="about" style="border-top:none">
     <div class="wrap sec-grid">
@@ -594,7 +649,7 @@
         </figure>
       </div>
     </div>
-    <p class="wrap ev-hint">The strip drifts on its own. Hover to hold it steady, click any frame to read.</p>
+    <p class="wrap ev-hint">The strip drifts on its own. Tap or click any frame to read.</p>
   </section>
 
   <!-- Advisory -->
@@ -901,6 +956,36 @@
         of full-bleed photo frames
      ========================================================= */
   var frames = Array.prototype.slice.call(document.querySelectorAll('.kw-frame'));
+
+  /* fit-to-width clamp: the font-size clamp() alone still overflowed long words
+     (PROCUREMENT) at desktop widths since it scales by vw, not by glyph count.
+     el.scrollWidth understates the real overflow here (the flex-centered text
+     can paint past the box without registering as scrollable overflow), so
+     measure the actual painted text extent via a Range and shrink font-size
+     to fit the padded frame width, at every viewport width rather than a
+     single mobile breakpoint. */
+  function fitKineticWords() {
+    frames.forEach(function (el) {
+      el.style.fontSize = '';
+      var textNode = null;
+      for (var n = 0; n < el.childNodes.length; n++) {
+        if (el.childNodes[n].nodeType === 3 && el.childNodes[n].textContent.trim()) { textNode = el.childNodes[n]; break; }
+      }
+      if (!textNode) return;
+      var range = document.createRange();
+      range.selectNodeContents(textNode);
+      var textWidth = range.getBoundingClientRect().width;
+      var cs = getComputedStyle(el);
+      var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (avail > 0 && textWidth > avail) {
+        var scale = avail / textWidth;
+        el.style.fontSize = (parseFloat(cs.fontSize) * scale) + 'px';
+      }
+    });
+  }
+  fitKineticWords();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitKineticWords); }
+
   var introTl = gsap.timeline({ paused: true });
   for (var f = 1; f < frames.length; f++) {
     (function (prev, next) {
@@ -910,10 +995,19 @@
   }
 
   var introPin = document.getElementById('introPin');
+  /* mobile: a fixed +=2400 pin range produced a ~3244px pin-spacer (the pinned hero's
+     own height plus 2400px of extra scroll runway) -- on a 390x844 phone that read as
+     3.8 empty screens, since everything inside a pinned trigger is position:fixed and
+     registers no scroll content of its own. Cap the extra runway hard on mobile so the
+     spacer stays within one viewport; the crossfade still scrubs, just over a much
+     shorter, phone-appropriate scroll distance. */
+  /* desktop scrub range cut from +=2400 to +=800 — the crossfade still scrubs at the
+     same visual pace per word, just over roughly a third of the prior dead scroll cost */
+  var introPinEnd = window.matchMedia('(max-width:767px)').matches ? '+=30' : '+=380';
   ScrollTrigger.create({
     trigger: introPin,
     start: 'top top',
-    end: '+=2400',
+    end: introPinEnd,
     pin: true,
     scrub: 0.35,
     onUpdate: function (self) { introTl.progress(self.progress); }
@@ -972,9 +1066,17 @@
     document.body.classList.remove('rail-zone');
   }
   ScrollTrigger.create({
+    /* 'top top'/'bottom bottom' makes the active (visible) window exactly
+       railHeight-viewportHeight — fine when the rail is several viewports
+       tall, but at the shortened desktop rail height that window shrank to
+       a sliver (or negative/inverted), so the pinned nav + kinetic-stage
+       overlay silently never showed for most of the scroll. 'top bottom'/
+       'bottom top' covers the full railHeight+viewportHeight span instead,
+       so the overlay stays visible for the whole traversal regardless of
+       rail length. */
     trigger: rail,
-    start: 'top top',
-    end: 'bottom bottom',
+    start: 'top bottom',
+    end: 'bottom top',
     onEnter: showRailOverlay,
     onEnterBack: showRailOverlay,
     onLeave: hideRailOverlay,
@@ -1071,6 +1173,7 @@
     ScrollTrigger.refresh();
     buildNavRowTriggers();
     buildKwTriggers();
+    fitKineticWords();
   });
   // iOS Safari toggles its address bar without a matching window 'resize' event on some
   // versions, which can leave the pinned intro/rail measurements stale; visualViewport
@@ -1093,6 +1196,20 @@
     if (!a) return;
     e.preventDefault();
     gotoSelector(a.getAttribute('data-goto'));
+    if (navLinks.classList.contains('open')) closeNav();
+  });
+
+  /* mobile hamburger: the horizontally-scrolling nav row clipped "Contact" and had
+     no way to reach it — real toggled dropdown, every item a >=44px tap target */
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navlinks');
+  function closeNav() {
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
+  navToggle.addEventListener('click', function () {
+    var open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
   /* =========================================================

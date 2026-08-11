@@ -35,8 +35,13 @@
     /* iOS Safari's address bar resizes the visual viewport after 100vh is measured, which
        can desync the GSAP-pinned intro from the layout beneath it. 100dvh tracks the real
        viewport; the 100vh line above stays as the fallback for browsers without dvh. */
-    body.intro-locked{height:100dvh}
-    .intro-pin{height:100dvh}
+    /* svh, not dvh: dvh changes size whenever Safari's toolbar collapses while
+       scrolling — and since the hero is the page's first element, the whole
+       document shifted under the finger on every toggle. svh is measured once
+       and stays put. (The iframed artifact never sees toolbar resizes, which
+       is why it scrolled smoothly with identical logic.) */
+    body.intro-locked{height:100svh}
+    .intro-pin{height:100svh}
   }
   img{display:block;width:100%;height:auto}
   a{color:inherit;text-decoration:none}
@@ -195,9 +200,17 @@
   }
   .menu-list.visible{opacity:1}
   @media (min-width:768px){.menu-list{left:18%}}
-  /* ghost menu: fixed, mix-blend-mode:difference, unreachable on touch (looks like
-     nav, cannot be tapped reliably) — replaced on mobile by the real hamburger nav */
-  @media (max-width:767px){.menu-list{display:none}}
+  /* portrait phones (Marc): the vertical menu shows here too — centered in the
+     upper zone, tappable; the beat content (quotes/words) renders below it.
+     Centering uses auto margins, NOT translateX — the beat animation writes a
+     transform (translateY) that would overwrite it. Solid colors instead of
+     mix-blend-mode: the rail background is white, and blend-on-fixed is an
+     iOS Safari compositing hazard. */
+  @media (max-width:767px){
+    .menu-list{left:0;right:0;width:max-content;margin:0 auto;top:20%;mix-blend-mode:normal;text-align:center}
+    .menu-list .item{display:block;height:auto;line-height:1.15;font-size:1.2rem;margin-bottom:.85rem;padding:.2rem .6rem;color:var(--faint)}
+    .menu-list .item.active{height:auto;font-size:1.45rem;color:var(--ink);font-weight:600}
+  }
   .item{display:table;height:2.25rem;font-size:1.4rem;line-height:2.25rem;font-weight:400;white-space:nowrap;color:var(--menu-text);pointer-events:none;cursor:pointer;margin-bottom:.6rem;transition:height .1s cubic-bezier(.25,.46,.45,.94)}
   .menu-list.visible .item{pointer-events:all}
   @media (min-width:768px){.item{height:2.5rem;font-size:1.875rem;margin-bottom:.85rem}}
@@ -229,8 +242,12 @@
   .rail-side p{font-size:clamp(18px,2vw,26px);font-weight:400;line-height:1.45;letter-spacing:-.01em;color:var(--ink)}
   .rail-side p .mut{color:var(--mut)}
   .rail-side.visible{opacity:1}
-  /* phones show the same quote overlays, widened to the phone viewport */
-  @media (max-width:767px){.rail-side{left:8%;right:8%}}
+  /* phones: quotes render in the lower zone, below the centered menu (Marc) */
+  @media (max-width:767px){
+    .rail-side{left:8%;right:8%;top:auto;bottom:10%;transform:none}
+    .rail-side p{font-size:16px}
+    .kw-row{padding-top:34vh} /* the Contact words center in the lower zone too */
+  }
   /* the statement renders as the About beat of the rail on every width */
   .statement{display:none}
 
@@ -1166,18 +1183,21 @@
   }
   buildKwTriggers();
 
+  /* Rebuild the scroll machinery ONLY when the width changes (rotation, real
+     window resize). iOS Safari fires resize events every time its toolbar
+     collapses/expands during scrolling — height-only changes — and rebuilding
+     all triggers mid-scroll was the jitter filmed on the live site. The
+     visualViewport mirror listener existed to catch exactly those toolbar
+     events, i.e. it amplified the problem, so it is gone. */
+  var lastResizeW = window.innerWidth;
   window.addEventListener('resize', function () {
+    if (window.innerWidth === lastResizeW) return;
+    lastResizeW = window.innerWidth;
     ScrollTrigger.refresh();
     buildNavRowTriggers();
     buildKwTriggers();
     fitKineticWords();
   });
-  // iOS Safari toggles its address bar without a matching window 'resize' event on some
-  // versions, which can leave the pinned intro/rail measurements stale; visualViewport
-  // fires reliably there, so mirror the refresh on it too (harmless where unsupported).
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function () { ScrollTrigger.refresh(); });
-  }
 
   /* =========================================================
      4) Smooth scroll-to anchors via GSAP ScrollToPlugin

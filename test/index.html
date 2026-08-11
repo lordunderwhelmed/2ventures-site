@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marc C Lange · 2 Ventures</title>
+<meta name="description" content="Marc C Lange advises investors, governments, and industry on unmanned systems, military autonomy, and defense procurement. Author of TECH WARS.">
+<meta property="og:title" content="Marc C Lange · 2 Ventures">
+<meta property="og:description" content="Defense-technology advisor. Unmanned systems, counter-UAS, procurement. TECH WARS on Substack.">
+<meta property="og:type" content="website">
+<link href="vendor/swiper-bundle.min.css" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTAiIGZpbGw9IiMxNjE1MTAiLz48dGV4dCB4PSIzMiIgeT0iNDciIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjQyIiBmaWxsPSIjZjRmMmVjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB0cmFuc2Zvcm09InNrZXdYKC04KSI+TTwvdGV4dD48L3N2Zz4=">
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#fafaf9;
+    --ink:#161510;
+    --mut:#65625a;
+    --faint:#9a978d;
+    --line:#e7e4dd;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --serif:"Times New Roman",Times,serif;
+    --menu-text:hsl(12,12%,92%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:auto;overflow-x:hidden}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body.intro-locked{overflow:hidden;height:100vh}
+  @media (max-width:767px){
+    /* iOS Safari's address bar resizes the visual viewport after 100vh is measured, which
+       can desync the GSAP-pinned intro from the layout beneath it. 100dvh tracks the real
+       viewport; the 100vh line above stays as the fallback for browsers without dvh. */
+    body.intro-locked{height:100dvh}
+    .intro-pin{height:100dvh}
+  }
+  img{display:block;width:100%;height:auto}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--ink);color:var(--bg)}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+
+  /* ---------- fx loader: typographic — a mask-fill wipe on the word LOADING ---------- */
+  .fx-loader{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .5s ease,visibility 0s linear .5s}
+  .fx-load-wrap{position:relative;font-weight:900;font-size:clamp(30px,6.4vw,68px);letter-spacing:-.02em;text-transform:uppercase}
+  .fx-load-dim{color:var(--line)}
+  .fx-load-bright{position:absolute;inset:0;color:var(--ink);clip-path:inset(0 100% 0 0);will-change:clip-path}
+  .fx-load-pct{font-size:12px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+  .fx-loader.fade-out{opacity:0;visibility:hidden}
+
+  /* ---------- intro: kinetic-word crossfade — real images bleeding through giant letterforms ---------- */
+  .intro-pin{position:relative;height:100vh;background:#0c0b09;overflow:hidden}
+  .intro-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .kw-frame{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;
+    padding:0 5vw;opacity:0;transform:scale(.96);
+    font-weight:900;text-transform:uppercase;letter-spacing:-.035em;line-height:.88;
+    font-size:clamp(52px,15vw,230px);
+    background-size:cover;background-position:50% 45%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    -webkit-text-stroke:1px rgba(244,242,236,.14);
+  }
+  .kw-frame.active{opacity:1;transform:scale(1)}
+  @supports not (background-clip:text){
+    .kw-frame{color:#f4f2ec;-webkit-text-fill-color:#f4f2ec;background-image:none !important}
+  }
+  /* mobile: UNMANNED / AUTONOMY / PROCUREMENT / DOMINANCE were overflowing and clipping
+     at both viewport edges — the clamp() max was sized for desktop widths; cap it lower
+     and widen the side padding so the longest word (PROCUREMENT) fits inside 390px */
+  @media (max-width:767px){
+    .kw-frame{font-size:clamp(40px,13vw,72px);padding:0 6vw;-webkit-text-stroke:1px rgba(244,242,236,.22)}
+  }
+  .intro-caption{position:absolute;left:0;right:0;bottom:clamp(28px,6vw,64px);display:flex;flex-direction:column;align-items:center;gap:10px;color:#f4f2ec;z-index:2;text-align:center}
+  .intro-quote{font-size:clamp(13px,1.5vw,16px);line-height:1.55;max-width:58ch;opacity:.92;padding:0 16px}
+  /* lead quote: sits up near the giant words, above the name tag (Marc's placement) */
+  .intro-quote--lead{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(150px,26vh,260px);width:min(58ch,90vw);max-width:none;text-align:center;color:#f4f2ec;opacity:1;z-index:2}
+  @media (max-width:960px) and (max-height:520px){.intro-quote--lead{bottom:clamp(70px,20vh,120px)}}
+  /* mobile landscape (short viewport height): the clamp()-sized word and the caption
+     block collide when there isn't enough vertical room — shrink both so they clear;
+     the desktop two-column section grid also collapses (the label column otherwise
+     reads as dead space at phone-landscape widths) */
+  @media (max-width:960px) and (max-height:520px){
+    .kw-frame{font-size:clamp(36px,9vw,110px)}
+    .intro-caption{bottom:10px;gap:4px}
+    .intro-quote{font-size:11px;max-width:52ch;padding:0 12px}
+    .intro-tag{font-size:10px}
+    .intro-hint{font-size:9px}
+  }
+  .intro-tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+  .intro-hint{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;animation:hintpulse 1.8s ease-in-out infinite}
+  @keyframes hintpulse{0%,100%{opacity:.35}50%{opacity:.85}}
+
+  /* ---------- header ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:20;transition:opacity .25s ease}
+  body.in-intro header,body.rail-zone header{opacity:0;pointer-events:none}
+  /* while the dark hero owns the screen nothing else may paint on it. `in-intro`
+     now spans the whole time the hero is visible (pin range + the viewport-height
+     it takes to scroll off), so this one rule kills both reported defects:
+     the plain header bar over the hero, and the rail overlays (About statement,
+     pinned menu list, kinetic stage) lingering on their .25s opacity fade when
+     the reader jumps back to the top. !important + transition:none makes the
+     suppression land in the same frame the hero returns, not a fade later. */
+  body.in-intro .rail-side,body.in-intro .menu-list,
+  body.in-intro .kinetic-stage,body.in-intro .scroll-hint{
+    opacity:0 !important;transition:none !important;pointer-events:none !important}
+  .nav{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:20px 0 16px;flex-wrap:wrap;background:linear-gradient(var(--bg) 86%,transparent)}
+  header .wrap{padding-left:clamp(32px,5.5vw,88px);padding-right:clamp(32px,5.5vw,88px)}
+  .brand{font-size:14px;font-weight:600;letter-spacing:.01em;white-space:nowrap}
+  .brand span{color:var(--faint);font-weight:400;margin-left:10px}
+  .nav ul{display:flex;gap:24px;list-style:none;flex-wrap:wrap}
+  .nav a{font-size:12.5px;color:var(--mut);letter-spacing:.02em;transition:color .15s;cursor:pointer}
+  .nav a:hover,.nav a.active{color:var(--ink)}
+  @media (max-width:640px){.brand span{display:none}}
+
+  /* ---------- mobile header: brand row + a hamburger-triggered dropdown (replaces the
+     clipped horizontally-scrolling nav row, which had no way to reach every item) ---------- */
+  .nav-toggle{display:none}
+  @media (max-width:767px){
+    .nav{flex-wrap:nowrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
+    .nav-toggle{
+      display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:44px;height:44px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;flex:0 0 auto;
+    }
+    .nav-toggle span{display:block;width:20px;height:1.5px;background:var(--ink)}
+    .nav ul{
+      display:none;flex-direction:column;flex-wrap:nowrap;gap:0;
+      width:100%;padding:6px 0 4px;margin-top:8px;border-top:1px solid var(--line);
+    }
+    .nav ul.open{display:flex}
+    .nav a{white-space:nowrap;font-size:14px;display:flex;align-items:center;min-height:44px}
+  }
+
+  /* ---------- intro statement ---------- */
+  .statement{padding-top:clamp(56px,9vw,110px);padding-bottom:clamp(20px,4vw,48px)}
+  .statement h1{font-size:clamp(21px,2.7vw,32px);font-weight:400;line-height:1.42;max-width:36em;letter-spacing:-.01em}
+  .statement h1 .mut{color:var(--mut)}
+  .statement .tag{font-size:12.5px;color:var(--faint);letter-spacing:.08em;margin-bottom:14px;display:block}
+  .brand img{display:inline-block;height:24px;width:auto;vertical-align:middle;margin-right:10px}
+
+  /* =====================================================================
+     Rail — real scroll distance. 5 nav spacers keep a small pinned nav
+     list; 6 kinetic spacers drive the giant scrub-masked headline words
+     (kinetic-stage), continuously scrubbed rather than switched on toggle.
+     ===================================================================== */
+  /* desktop rail runway cut to ~1/3 of its prior length (was 20vh/18vh/45vh/140px/280px) —
+     same pinned nav + scrubbing quotes, delivered over far less dead scroll distance.
+     (The show/hide ScrollTrigger below now uses 'top bottom'/'bottom top', whose active
+     window is railHeight+viewportHeight — always positive regardless of rail length —
+     so this no longer needs to stay taller than the viewport to work correctly.) */
+  .rail{position:relative;padding-top:4vh;padding-bottom:3vh}
+  .spacer[data-row="0"]{height:7vh}
+  .spacer{height:80px}
+  @media (min-width:768px){
+    /* rail runway restored: every beat must fire AFTER the hero has fully
+       scrolled off (the in-intro rule suppresses all rail overlays until then)
+       and needs real dwell to be read. 60vh of lead-in clears the hero's
+       pin+exit distance; each nav beat then holds 40vh, each kinetic word 30vh.
+       The previous 28px/50px spacers packed the whole sequence inside the
+       suppressed window — the quotes never appeared and the menu became
+       visible already sitting on Writing. */
+    /* tail: the last word's zone ends when its spacer crosses viewport center,
+       so the section below needs at least half a viewport of runway before it
+       may enter — otherwise About slides up underneath the closing word */
+    .rail{padding-top:60vh;padding-bottom:50vh}
+    .spacer,.spacer[data-row="0"]{height:40vh}
+    .spacer[data-row="3"]{height:18vh} /* Press carries no quote (Marc) — quick tick, not a long empty stage */
+  }
+  .spacer.spacer--kinetic{height:170px}
+  @media (min-width:768px){.spacer.spacer--kinetic{height:30vh}}
+  /* mobile: the pinned ghost nav (.menu-list) and the kinetic word scrub (.kinetic-stage)
+     are both position:fixed overlays that never reserve their own scroll space — the
+     .rail spacers below were sized to give THEM room to scrub, but on mobile those
+     overlays are hidden (see .menu-list / .kinetic-stage mobile rules) and replaced by
+     the inline .rail-mobile-quotes cards, so the spacers collapse to a minimal amount
+     of breathing room instead of reserving several empty screens. */
+  @media (max-width:767px){
+    /* phones run the same scrub beats as desktop (Marc: mobile renders down to
+       the same content). Lead-in clears the hero (its +30px pin plus one
+       viewport of exit) before the first beat fires; beats sized for a phone. */
+    .rail{padding-top:58vh;padding-bottom:50vh}
+    .spacer,.spacer[data-row="0"]{height:36vh}
+    .spacer[data-row="3"]{height:18vh}
+    .spacer.spacer--kinetic{height:30vh}
+  }
+  /* Writing quote: same centered position + format as the other rail quotes (Marc) */
+  .rail-side[data-idx="4"] p{font-size:clamp(18px,2vw,26px)}
+
+  .menu-list{
+    position:fixed;left:12.5%;top:50%;
+    z-index:10;list-style:none;pointer-events:none;mix-blend-mode:difference;
+    will-change:transform;font-family:var(--sans);opacity:0;transition:opacity .2s ease;
+  }
+  .menu-list.visible{opacity:1}
+  @media (min-width:768px){.menu-list{left:18%}}
+  /* ghost menu: fixed, mix-blend-mode:difference, unreachable on touch (looks like
+     nav, cannot be tapped reliably) — replaced on mobile by the real hamburger nav */
+  @media (max-width:767px){.menu-list{display:none}}
+  .item{display:table;height:2.25rem;font-size:1.4rem;line-height:2.25rem;font-weight:400;white-space:nowrap;color:var(--menu-text);pointer-events:none;cursor:pointer;margin-bottom:.6rem;transition:height .1s cubic-bezier(.25,.46,.45,.94)}
+  .menu-list.visible .item{pointer-events:all}
+  @media (min-width:768px){.item{height:2.5rem;font-size:1.875rem;margin-bottom:.85rem}}
+  .item.active{height:3rem;font-weight:600}
+  @media (min-width:768px){.item.active{height:3.4rem}}
+
+  .kinetic-stage{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .2s ease}
+  .kinetic-stage.visible{opacity:1}
+  /* mobile keeps the word scrub — the rail spacers above now reserve real
+     scroll distance on phones too (Marc: same content as desktop) */
+  .kw-row{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.4vw,18px);opacity:0;pointer-events:none;will-change:clip-path,opacity,transform;padding:0 6vw;text-align:center}
+  .kinetic-stage.visible .kw-row.active{pointer-events:all}
+  .kw-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);opacity:0;transition:opacity .3s ease}
+  .kw-row.active .kw-kicker{opacity:1}
+  .kw-big{
+    font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:.86;
+    font-size:clamp(46px,13.5vw,230px);
+    background-size:cover;background-position:50% 35%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    -webkit-text-stroke:1px rgba(22,21,16,.09);
+  }
+  @supports not (background-clip:text){
+    .kw-big{color:var(--ink);-webkit-text-fill-color:var(--ink);background-image:none !important}
+  }
+
+  /* statement block lives beside the About menu entry on desktop (Marc's brief) */
+  .rail-side{position:fixed;left:42%;right:8%;top:50%;transform:translateY(-50%);z-index:9;opacity:0;transition:opacity .25s ease;pointer-events:none;text-align:center}
+  .rail-side .tag{font-size:12.5px;color:var(--faint);letter-spacing:.08em;margin-bottom:14px;display:block}
+  .rail-side p{font-size:clamp(18px,2vw,26px);font-weight:400;line-height:1.45;letter-spacing:-.01em;color:var(--ink)}
+  .rail-side p .mut{color:var(--mut)}
+  .rail-side.visible{opacity:1}
+  /* phones show the same quote overlays, widened to the phone viewport */
+  @media (max-width:767px){.rail-side{left:8%;right:8%}}
+  /* the statement renders as the About beat of the rail on every width */
+  .statement{display:none}
+
+  /* mobile-only: same quote content as the desktop .rail-side overlay (data-idx 1,2,4 —
+     idx 0 already renders inline via .statement above), shown as plain readable cards
+     instead of a fixed pinned overlay that only ever appeared during a scroll-scrub */
+  /* retired: phones now get the real scrub beats instead of static stand-in cards */
+  .rail-mobile-quotes{display:none}
+
+  .scroll-hint{pointer-events:none;position:fixed;left:12.5%;bottom:8vh;color:var(--menu-text);font-size:1.1rem;display:flex;align-items:center;gap:.4rem;mix-blend-mode:difference;opacity:0;transition:opacity .3s ease;z-index:10}
+  @media (min-width:768px){.scroll-hint{left:18%}}
+  .scroll-hint.visible{opacity:1}
+  .scroll-hint svg{width:1.2rem;height:1.2rem;animation:scrollhint 2.4s ease-in-out infinite}
+  @keyframes scrollhint{0%{transform:translateY(-8px);opacity:0}35%{transform:translateY(0);opacity:1}70%{transform:translateY(0);opacity:1}100%{transform:translateY(6px);opacity:0}}
+
+  .below{position:relative;z-index:1;background:var(--bg)}
+
+  /* ---------- kinetic section headers (site-wide typographic accent) ---------- */
+  .kinetic-head{font-size:clamp(30px,4.6vw,56px) !important;font-weight:800 !important;letter-spacing:-.025em !important;line-height:1.05 !important;max-width:none !important;padding-right:.08em;clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.16,1,.3,1)}
+  .reveal.in .kinetic-head,.kinetic-head.reveal.in{clip-path:inset(-4% -4% -4% -4%)}
+
+  /* ---------- evidence gallery: laterally drifting filmstrip (replaces the archive grid) ---------- */
+  .evidence-rail{overflow:hidden;padding:clamp(28px,4vw,44px) 0 8px;will-change:transform}
+  .evidence-track{display:flex;gap:clamp(16px,2.5vw,32px);width:max-content}
+  .ev-card{flex:0 0 clamp(230px,27vw,360px);cursor:pointer}
+  .ev-card .img-wrap{overflow:hidden;background:var(--bg-soft)}
+  .ev-card img{transition:transform .5s cubic-bezier(.25,.46,.45,.94),opacity .3s ease}
+  .ev-card:hover img{opacity:.92;transform:scale(1.045)}
+  .ev-card figcaption{margin-top:9px;font-size:12.5px;color:var(--ink);display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+  .ev-card figcaption span{color:var(--faint)}
+  .ev-hint{margin-top:clamp(20px,3vw,32px);font-size:12.5px;color:var(--faint);letter-spacing:.02em}
+
+  /* ---------- lightbox ---------- */
+  .lightbox{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateX(6%);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s}
+  body.lb-open .lightbox{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .1s,transform .35s ease .1s,visibility 0s}
+  .lb-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px clamp(16px,3vw,40px) 14px}
+  .lb-caption b{display:block;font-size:15px;font-weight:600;margin-bottom:2px}
+  .lb-caption span{font-size:12.5px;color:var(--faint)}
+  .lb-controls{display:flex;gap:20px;font-size:13px;white-space:nowrap}
+  .lb-controls button,.lb-controls a{background:none;border:0;cursor:pointer;font:inherit;color:var(--mut);transition:color .15s;padding:0}
+  .lb-controls button:hover,.lb-controls a:hover{color:var(--ink)}
+  .lb-stage{flex:1;min-height:0;position:relative;padding:0 clamp(16px,3vw,40px) clamp(16px,3vw,36px);display:flex;align-items:center;justify-content:center}
+  .lb-stage img{max-width:100%;max-height:100%;width:auto;object-fit:contain;transition:opacity .25s ease}
+  .lb-stage img.swap{opacity:0}
+  .lb-zone{position:absolute;top:0;bottom:0;width:50%;border:0;background:none;padding:0}
+  .lb-zone.prev{left:0;cursor:w-resize}
+  .lb-zone.next{right:0;cursor:e-resize}
+
+  /* ---------- text sections ---------- */
+  .sec{border-top:1px solid var(--line);padding:clamp(44px,6vw,92px) 0}
+  .sec-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(24px,4vw,64px);align-items:start}
+  .sec-label{font-size:12.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+  .sec-head{font-size:clamp(19px,2.2vw,25px);font-weight:500;letter-spacing:-.01em;line-height:1.3;margin:10px 0 22px;max-width:20ch}
+  .sec-body{max-width:62ch;display:grid;gap:18px}
+  .sec-body p{font-size:clamp(15px,1.5vw,16.5px);line-height:1.72;color:var(--ink)}
+  .sec-body p.small{font-size:13.5px;color:var(--mut)}
+  .sec-body a{border-bottom:1px solid var(--line);transition:border-color .15s}
+  .sec-body a:hover{border-color:var(--ink)}
+  .sec-figure{margin-top:clamp(28px,4vw,44px)}
+  /* phone-landscape: the label column otherwise reads as dead space at short heights */
+  @media (max-width:960px) and (max-height:520px){.sec-grid{grid-template-columns:minmax(0,1fr)}}
+  .sec-figure figcaption{margin-top:9px;font-size:12.5px;color:var(--faint)}
+  @media (max-width:760px){.sec-grid{grid-template-columns:minmax(0,1fr)}}
+
+  .fact-list{list-style:none;display:grid;gap:9px;font-size:14px;margin-top:8px}
+  .fact-list li{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .fact-list li:last-child{border-bottom:none}
+  .fact-list li b{font-weight:500;color:var(--ink)}
+  .fact-list li span{color:var(--mut)}
+  @media (max-width:480px){.fact-list li{grid-template-columns:1fr}}
+
+  blockquote.pull{font-size:1.15rem;line-height:1.6;color:var(--ink);border-left:2px solid var(--ink);padding-left:1.2rem;margin:6px 0}
+
+  .photo-slot{
+    aspect-ratio:4/3;border:1px dashed var(--faint);border-radius:2px;
+    background:repeating-linear-gradient(135deg,var(--bg-soft),var(--bg-soft) 10px,#f2f1ed 10px,#f2f1ed 20px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;gap:6px;
+  }
+  .photo-slot .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  .photo-slot p{font-size:12.5px;color:var(--mut);max-width:26ch;line-height:1.5}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.6rem}
+  @media (max-width:640px){.cards{grid-template-columns:1fr}}
+  .card{padding:1.4rem 1.5rem;border:1px solid var(--line);border-radius:2px}
+  .card h3{font-size:.95rem;font-weight:600;margin-bottom:.5rem}
+  .card p{font-size:.87rem;color:var(--mut);line-height:1.6}
+  .pill-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
+  .pill{font-size:.7rem;font-weight:500;letter-spacing:.02em;color:var(--mut);border:1px solid var(--line);border-radius:2px;padding:.3rem .75rem}
+
+  .events{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;margin-top:1rem}
+  .event{padding:1.2rem 1.3rem;border:1px solid var(--line);border-radius:2px}
+  .event .meta{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem}
+  .event h3{font-size:.92rem;font-weight:600;margin-bottom:.35rem}
+  .event p{font-size:.83rem;color:var(--mut);line-height:1.55}
+  .photo-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2rem;align-items:start}
+  .photo-row figure{margin:0}
+  .photo-row img{width:100%;height:clamp(180px,17vw,260px);object-fit:cover;object-position:center;border-radius:2px}
+  @media (max-width:900px){.photo-row{grid-template-columns:1fr 1fr}.photo-row img{height:clamp(200px,24vw,280px)}}
+  /* mobile: object-position:center was cropping the top of the head on the tall single-column
+     aspect ratio these photos take at phone widths; bias the crop upward instead */
+  @media (max-width:640px){.photo-row{grid-template-columns:1fr}.photo-row img{height:clamp(240px,60vw,300px);object-position:50% 18%}}
+
+  /* ---------- press: scroll-scrubbed split — left outlet rail scrolls in place while the
+       card track advances right-to-left, mirroring the top-of-page rail mechanic ---------- */
+  .press-swiper{margin-top:1.2rem;padding-bottom:2.6rem !important}
+  .press-swiper .swiper-slide{height:auto}
+  .swiper-button-next.press-next,.swiper-button-prev.press-prev{color:var(--ink);top:auto;bottom:0;width:2rem;height:1.6rem}
+  .swiper-button-next.press-next:after,.swiper-button-prev.press-prev:after{font-size:.85rem}
+  .swiper-button-prev.press-prev{left:auto;right:3.2rem}
+  .swiper-button-next.press-next{right:0}
+  .swiper-pagination.press-pagination{bottom:0 !important;left:0 !important;width:auto !important;text-align:left !important}
+  .swiper-pagination.press-pagination{z-index:6;pointer-events:all}
+  .swiper-pagination.press-pagination .swiper-pagination-bullet{background:var(--faint);width:10px;height:10px;margin:0 6px !important;position:relative;z-index:6}
+  .swiper-pagination.press-pagination .swiper-pagination-bullet-active{background:var(--ink)}
+  .press-card{border:1px solid var(--line);border-radius:2px;padding:1.3rem 1.4rem;height:100%;display:flex;flex-direction:column;gap:.6rem;background:var(--bg)}
+  .press-card .row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+  .press-outlet{font-size:.95rem;font-weight:600}
+  .press-date{font-size:.75rem;color:var(--faint);white-space:nowrap}
+  .press-title{font-size:.9rem;font-weight:600;line-height:1.45;margin:.1rem 0 0}
+  .press-desc{font-size:.86rem;color:var(--mut);line-height:1.6;flex:1}
+  .press-link{font-size:.78rem;color:var(--mut);border-bottom:1px solid var(--line);width:fit-content}
+  .press-link:hover{border-color:var(--ink);color:var(--ink)}
+  .press-footer{margin-top:.8rem;font-size:.83rem;color:var(--mut);line-height:1.6}
+  .press-scrub{position:relative;height:340vh}
+  .press-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+  .press-split{display:grid;grid-template-columns:minmax(170px,.9fr) minmax(0,2.4fr);gap:clamp(24px,4vw,64px);align-items:center;width:100%}
+  .press-outlets{list-style:none;display:grid;gap:10px}
+  .press-outlets li{font-size:clamp(14px,1.4vw,17px);color:var(--faint);cursor:pointer;transition:color .2s,transform .2s;line-height:1.3}
+  .press-outlets li.active{color:var(--ink);font-weight:600;transform:translateX(6px)}
+  .press-viewport{overflow:hidden}
+  .press-track{display:flex;gap:clamp(16px,2vw,28px);width:max-content;will-change:transform}
+  .press-track .press-card{flex:0 0 clamp(260px,30vw,380px)}
+  @media (max-width:760px){
+    .press-scrub{height:auto}
+    .press-sticky{position:static;height:auto;overflow:visible}
+    .press-split{grid-template-columns:1fr}
+    .press-outlets{display:none}
+    .press-viewport{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+    .press-track{transform:none !important}
+  }
+
+  /* ---------- entity logos: small color mark, lower-right of a text box (Marc's brief) ---------- */
+  .card,.event,.press-card{position:relative}
+  .event{padding-bottom:3rem}
+  .event.event--txt{padding-bottom:1.3rem} /* logo-less events: drop reserved logo space (Marc: empty-box look) */
+  .cards{gap:1.8rem}
+  /* card logos: flow row right after the text (no arbitrary gap), right-aligned,
+     per-mark sizing so every logo is readable without disturbing the text */
+  /* entity logo row below the cards (replaces the name pills; smart per-mark sizing) */
+  .logo-row{display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,36px);align-items:center;margin-top:1.9rem}
+  .logo-row img{height:26px;width:auto;max-width:130px;object-fit:contain}
+  .logo-row img.lg-sm{height:14px}
+  .logo-row img.lg-lg{height:34px}
+  .press-track .press-card{padding-bottom:2.6rem}
+  .ent-logo{position:absolute;right:14px;bottom:12px;height:30px;width:auto;max-width:140px;object-fit:contain;opacity:.95;display:block}
+  .ent-logo--wide{height:auto;width:auto;max-height:42px;max-width:210px}
+
+  /* ---------- contact form (no exposed email address) ---------- */
+  .contact-form{display:grid;gap:14px;max-width:520px;margin-top:6px}
+  .contact-form label{display:grid;gap:6px;font-size:12px;color:var(--mut);letter-spacing:.05em;text-transform:uppercase}
+  .contact-form input,.contact-form textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg-soft);border:1px solid var(--line);border-radius:2px;padding:10px 12px;outline:none;transition:border-color .15s;resize:vertical}
+  .contact-form input:focus,.contact-form textarea:focus{border-color:var(--ink)}
+  .cf-send{font:inherit;font-size:14px;font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:2px;padding:12px 28px;cursor:pointer;width:fit-content;transition:opacity .15s}
+  .cf-send:hover{opacity:.85}
+  .cf-hp{position:absolute !important;left:-9999px !important;width:1px;height:1px;overflow:hidden}
+
+  .contact-links{display:grid;gap:6px;font-size:clamp(19px,2.6vw,28px);letter-spacing:-.01em}
+  .contact-links a{width:fit-content;border-bottom:1px solid var(--line);transition:border-color .15s}
+  .contact-links a:hover{border-color:var(--ink)}
+
+  footer{border-top:1px solid var(--line);padding:22px 0 30px;font-size:12px;color:var(--faint)}
+  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer a:hover{color:var(--ink)}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .intro-hint,.scroll-hint svg{animation:none}
+    .kinetic-head{clip-path:inset(-4% -4% -4% -4%) !important}
+  }
+</style>
+</head>
+<body class="intro-locked in-intro">
+
+<div class="fx-loader" id="fxLoader">
+  <div class="fx-load-wrap"><span class="fx-load-dim">LOADING</span><span class="fx-load-bright" id="fxLoaderBright">LOADING</span></div>
+  <span class="fx-load-pct" id="fxLoaderPct">0%</span>
+</div>
+
+<!-- preloaders: gate the loader exactly like the image-sequence intro did, just against the
+     4 photos used as kinetic-word fills rather than 12 frame stills -->
+<img class="seq-preload" data-i="0" src="img/waterworld.jpg" alt="" style="display:none">
+<img class="seq-preload" data-i="1" src="img/far-person-vision-hero.jpg" alt="" style="display:none">
+<img class="seq-preload" data-i="2" src="img/capability-factories.jpg" alt="" style="display:none">
+<img class="seq-preload" data-i="3" src="img/drone-dominance.jpeg" alt="" style="display:none">
+
+<div class="intro-pin" id="introPin">
+  <div class="intro-stage" id="introStage">
+    <div class="kw-frame active" data-i="0" style="background-image:url(img/waterworld.jpg)">Unmanned</div>
+    <div class="kw-frame" data-i="1" style="background-image:url(img/far-person-vision-hero.jpg)">Autonomy</div>
+    <div class="kw-frame" data-i="2" style="background-image:url(img/capability-factories.jpg)">Procurement</div>
+    <div class="kw-frame" data-i="3" style="background-image:url(img/drone-dominance.jpeg)">Dominance</div>
+    <p class="intro-quote intro-quote--lead">"One of the best thinkers on modern warfare." — Perry Boyle, former Head of Equities, Point72 Capital</p>
+    <div class="intro-caption">
+      <span class="intro-tag">Marc C Lange · Senior Advisor</span>
+      <span class="intro-hint">Scroll</span>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" data-goto="#top"><img src="img/logos/2v.png" alt="2 Ventures" onerror="this.style.display='none'">Marc C Lange<span>2 Ventures</span></a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span></span><span></span><span></span></button>
+    <ul id="navlinks">
+      <li><a href="#about" data-goto="#about">About</a></li>
+      <li><a href="#advisory" data-goto="#advisory">Advisory</a></li>
+      <li><a href="#speaking" data-goto="#speaking">Speaking</a></li>
+      <li><a href="#press" data-goto="#press">Press</a></li>
+      <li><a href="#techwars" data-goto="#techwars">Writing</a></li>
+      <li><a href="#contact" data-goto="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="content" id="top">
+<main>
+
+  <!-- ================= Rail: real scroll distance for the kinetic-word scrub =================
+       5 nav spacers keep a small pinned nav list (About/Advisory/Speaking/Press/Contact);
+       one solo kinetic spacer scrubs the name-only treatment (Marc C Lange) with article
+       imagery bleeding through the letterforms. Rail padding-top offsets the viewport-center
+       trigger so the first nav item (About) is active on entry, not a later one. -->
+  <div class="rail" id="rail">
+    <!-- 4 nav spacers (About/Advisory/Speaking/Press) -> 6 kinetic spacers (the WRITING
+         zone: big words scrub while Writing is active) -> 1 nav spacer (Contact) -->
+    <div class="spacer" data-row="0"></div>
+    <div class="spacer" data-row="1"></div>
+    <div class="spacer" data-row="2"></div>
+    <div class="spacer" data-row="3"></div>
+    <!-- Writing: the four-star General quote holds this whole beat (Marc) -->
+    <div class="spacer" data-row="4"></div>
+    <!-- Contact: the six image-filled words scrub through while Contact is active (Marc) -->
+    <div class="spacer spacer--kinetic" data-work="0"></div>
+    <div class="spacer spacer--kinetic" data-work="1"></div>
+    <div class="spacer spacer--kinetic" data-work="2"></div>
+    <div class="spacer spacer--kinetic" data-work="3"></div>
+    <div class="spacer spacer--kinetic" data-work="4"></div>
+    <div class="spacer spacer--kinetic" data-work="5"></div>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay">
+    <ul class="menu-list" id="menuList">
+      <li><a class="item" href="#about" data-goto="#about">About</a></li>
+      <li><a class="item" href="#advisory" data-goto="#advisory">Advisory</a></li>
+      <li><a class="item" href="#speaking" data-goto="#speaking">Speaking</a></li>
+      <li><a class="item" href="#press" data-goto="#press">Press</a></li>
+      <li><a class="item" href="#techwars" data-goto="#techwars">Writing</a></li>
+      <li><a class="item" href="#contact" data-goto="#contact">Contact</a></li>
+    </ul>
+
+    <div class="kinetic-stage" id="kineticStage">
+      <!-- restored per Marc: the original six case-study words scrub through as you
+           scroll the menu; each row carries a right-side info box (title/date) -->
+      <div class="kw-row" data-idx="0">
+        <div class="kw-big" style="background-image:url(img/lucas-hero.jpeg)">Fury</div>
+      </div>
+      <div class="kw-row" data-idx="1">
+        <div class="kw-big" style="background-image:url(img/far-person-vision-hero.jpg)">Vision</div>
+      </div>
+      <div class="kw-row" data-idx="2">
+        <div class="kw-big" style="background-image:url(img/waterworld.jpg)">Waterworld</div>
+      </div>
+      <div class="kw-row" data-idx="3">
+        <div class="kw-big" style="background-image:url(img/capability-factories.jpg)">Factories</div>
+      </div>
+      <div class="kw-row" data-idx="4">
+        <div class="kw-big" style="background-image:url(img/30-questions.jpg)">Questions</div>
+      </div>
+      <div class="kw-row" data-idx="5">
+        <div class="kw-big" style="background-image:url(img/drone-dominance.jpeg)">Dominance</div>
+      </div>
+    </div>
+
+    <div class="rail-side" data-idx="0">
+      <span class="tag">2 Ventures · Berlin · Barcelona · San Francisco</span>
+      <p>Advisor to investors and governments on unmanned systems, military autonomy, and defense procurement.<br>
+      <span class="mut">Author of TECH WARS. 20 years in technology leadership, more than 10 in aerospace, defense, and AI.</span></p>
+    </div>
+    <div class="rail-side" data-idx="1">
+      <p>"A must-read analyst for any European nation working to catch up to the realities of modern warfare."<br>
+      <span class="mut">— Perry Boyle, CEO &amp; Co-Founder, MITS Capital</span></p>
+    </div>
+    <div class="rail-side" data-idx="2">
+      <p>"...the best commentary I've seen on drone tech &amp; warfare..."<br>
+      <span class="mut">— a financial portfolio manager</span></p>
+    </div>
+    <div class="rail-side" data-idx="4">
+      <p>"I'm reading your newsletter with growing attention and enthusiasm."<br>
+      <span class="mut">— a four-star NATO General</span></p>
+    </div>
+
+    <div class="scroll-hint" id="scrollHint">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Scroll
+    </div>
+  </div>
+
+  <div class="below">
+
+  <!-- intro statement -->
+  <section class="statement wrap">
+    <span class="tag">2 Ventures · Berlin · Barcelona · San Francisco</span>
+    <h1>Advisor to investors and governments on unmanned systems, military autonomy, and defense procurement.<br>
+    <span class="mut">Author of TECH WARS. 20 years in technology leadership, more than 10 in aerospace, defense, and AI.</span></h1>
+  </section>
+
+  <!-- mobile: same 3 remaining quotes the desktop .rail-side overlay shows during the
+       scroll-scrub (data-idx 0's quote is already inline above via .statement) -->
+  <div class="rail-mobile-quotes">
+    <div class="rmq-card">
+      <p>"A must-read analyst for any European nation working to catch up to the realities of modern warfare."<span class="mut">— Perry Boyle, CEO &amp; Co-Founder, MITS Capital</span></p>
+    </div>
+    <div class="rmq-card">
+      <p>"...the best commentary I've seen on drone tech &amp; warfare..."<span class="mut">— a financial portfolio manager</span></p>
+    </div>
+    <div class="rmq-card">
+      <p>"I'm reading your newsletter with growing attention and enthusiasm."<span class="mut">— a four-star NATO General</span></p>
+    </div>
+  </div>
+
+  <!-- About (moved before TECH WARS per Marc's round-1 feedback) -->
+  <section class="sec" id="about" style="border-top:none">
+    <div class="wrap sec-grid">
+      <div class="sec-label reveal">About</div>
+      <div class="reveal">
+        <div class="sec-head kinetic-head" style="margin-top:0">Strategic advisor at the sharp end of defense technology.</div>
+        <div class="sec-body">
+          <p>
+            Marc C Lange advises investors, governments, and industry on unmanned systems,
+            military autonomy, and defense procurement. Example: work on a counter-UAS
+            program: testing kit in the field, red-teaming vendor claims, and advising
+            procurement officials on what the technology actually does, versus what the
+            press release says.
+          </p>
+          <p>
+            He is Strategic Program Advisor and Team Coach for AI, C2, and unmanned systems
+            to the Federal German Breakthrough Innovation Agency (SPRIND), coaching 13
+            anti-drone startup teams in the Anti-Drone Response 2.0 competition. A member of
+            the European Defence Agency's Autonomous Systems Community of Interest (EDA ASCI),
+            he mentors and judges defense-tech suppliers (European Defence Fund, NATO).
+          </p>
+          <blockquote class="pull">
+            "The variable that determines whether a capability changes the battlefield is not
+            peak performance. It's cost-exchange ratio, innovation rate, and procurement-cycle
+            speed."
+          </blockquote>
+          <p>
+            Before defense: five years advising NASA Ames and ESA directorates on space
+            technology investment; product leadership at Wayfair; rolled out Google's
+            global startup program; CPO for Conversational AI at Deutsche Bahn, early AI
+            startup founder. Governing Board member, International Space University and
+            Roxolani Trust.
+          </p>
+          <ul class="fact-list">
+            <li><b>2 Ventures</b><span>Strategic Advisor</span></li>
+            <li><b>SPRIND</b><span>Defense Advisor, Anti-Drone Response 2.0 · Federal German Breakthrough Innovation Agency</span></li>
+            <li><b>NATO</b><span>Mentor &amp; Judge, defense-tech acceleration</span></li>
+            <li><b>EUDIS</b><span>Mentor, European Defence Fund</span></li>
+            <li><b>EDA</b><span>Accredited Member, Autonomous Systems Community of Interest</span></li>
+            <li><b>ISU</b><span>Governing Board Member, International Space University</span></li>
+            <li><b>Harvard Business</b><span>Operational Excellence Leadership</span></li>
+          </ul>
+        </div>
+        <figure class="sec-figure" style="max-width:280px">
+          <img src="img/marc-avatar.jpeg" alt="Marc C Lange" loading="lazy">
+          <figcaption>Marc C Lange · 2 Ventures</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH WARS: laterally drifting evidence gallery (replaces the static archive grid) -->
+  <section class="sec" id="techwars">
+    <div class="wrap">
+      <div class="sec-label reveal">Writing</div>
+      <div class="sec-head kinetic-head reveal">TECH WARS.</div>
+      <div class="reveal" style="max-width:70ch">
+        <p style="font-size:clamp(15px,1.5vw,16.5px);line-height:1.72;margin-bottom:26px">
+          Deep-dive analysis of drone warfare, defense procurement, and the economics of modern
+          conflict, written for and read by the people making decisions: defense investors, MoD
+          procurement officials, industry and startup executives, and allied military staff.
+          Every issue is 5,000 to 15,000+ words of original analysis built from primary sources,
+          OSINT, and direct access, written by a practitioner who's worked with all of the
+          above-mentioned groups on real solutions in the field.
+        </p>
+        <a href="https://techwars.substack.com" target="_blank" rel="noopener" class="press-link" style="font-size:.85rem">techwars.substack.com &#8599;&#xFE0E;</a>
+      </div>
+    </div>
+    <div class="evidence-rail" id="evidenceRail">
+      <div class="evidence-track" id="evidenceTrack">
+        <figure class="ev-card" data-work="0">
+          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>How LUCAS Delivered Epic Fury <span>· 2 March 2026</span></figcaption>
+        </figure>
+        <figure class="ev-card" data-work="1">
+          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>Far-Person Vision: The Future of Strike? <span>· 19 May 2026</span></figcaption>
+        </figure>
+        <figure class="ev-card" data-work="2">
+          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>Waterworld: How Drones Will Reshape Shipping <span>· 11 May 2026</span></figcaption>
+        </figure>
+        <figure class="ev-card" data-work="3">
+          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>Capability Factories: How to Procure <span>· 20 April 2026</span></figcaption>
+        </figure>
+        <figure class="ev-card" data-work="4">
+          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>The 30 Most Dangerous Questions for CUAS Startups <span>· 28 February 2026</span></figcaption>
+        </figure>
+        <figure class="ev-card" data-work="5">
+          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover" loading="lazy"></div>
+          <figcaption>Drone Dominance: Gauntlet Phase I <span>· 11 February 2026</span></figcaption>
+        </figure>
+      </div>
+    </div>
+    <p class="wrap ev-hint">The strip drifts on its own. Tap or click any frame to read.</p>
+  </section>
+
+  <!-- Advisory -->
+  <section class="sec" id="advisory">
+    <div class="wrap sec-grid">
+      <div class="sec-label reveal">Advisory &amp; Consulting</div>
+      <div class="reveal">
+        <div class="sec-head kinetic-head" style="margin-top:0">Where the engagement goes.</div>
+        <div class="sec-body">
+          <p>
+            The work is analytical, not promotional. Clients are MoD procurement offices and
+            strategic investors separating substance from vendor noise, and founders building
+            in the defense-tech space. Entry point: the contact form at the end of this page.
+          </p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>Investment Due Diligence</h3>
+            <p>Asking the hard questions: the pitch-to-reality gap. Red-teaming vendor
+            capability claims. Cost-exchange modeling. Supply-chain fragility analysis two
+            levels down. Production-rate verification against independently checkable
+            delivery schedules.</p>
+          </div>
+          <div class="card">
+            <h3>Defense Procurement Strategy</h3>
+            <p>Advising governments and supranational bodies on unmanned systems
+            pre-procurement and acquisition programs, counter-UAS infrastructure protection,
+            and the gap between announced budget and fielded capability.</p>
+          </div>
+          <div class="card">
+            <h3>Vendor &amp; Technology Assessment</h3>
+            <p>Field-testing kit. Pressure-testing autonomy and performance claims link by
+            link through the kill chain. Delivered to five NATO and NATO-aligned
+            governments.</p>
+          </div>
+          <div class="card">
+            <h3>Strategic Positioning, GTM &amp; Fundraising</h3>
+            <p>Defense-tech founders preparing for government contracts or investment
+            rounds. Positioning for MoD and dual-use procurement. Go-to-market in the
+            European and transatlantic defense market. Please contact Marc through your
+            investor if you are interested in working with him.</p>
+          </div>
+        </div>
+        <div class="logo-row">
+          <img src="img/logos/nasa.png" alt="NASA" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/esa.png" alt="ESA" loading="lazy" onerror="this.style.display='none'">
+          <img class="lg-sm" src="img/logos/sprind.png" alt="SPRIND" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/eda.png" alt="European Defence Agency" loading="lazy" onerror="this.style.display='none'">
+          <img class="lg-lg" src="img/logos/nato.png" alt="NATO" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/ec.png" alt="European Commission" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/eudis.png" alt="EUDIS" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/edth.png" alt="European Defence Tech Hub" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/vinnova.png" alt="Vinnova" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/google.png" alt="Google" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <figure class="sec-figure" style="max-width:420px">
+          <img src="img/field-testing.jpg" alt="Field-testing counter-UAS kit: drone evaluation flight at a test range" loading="lazy">
+          <figcaption>Field-testing, Anti-Drone Response 2.0. Photo: <a href="https://felixadler.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Felix Adler</a></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speaking -->
+  <section class="sec" id="speaking">
+    <div class="wrap sec-grid">
+      <div class="sec-label reveal">Speaking &amp; Moderation</div>
+      <div class="reveal">
+        <div class="sec-head kinetic-head" style="margin-top:0">Events and panels.</div>
+        <div class="sec-body">
+          <p>
+            Available for keynotes, expert panels, and moderation on drone warfare, autonomy,
+            counter-UAS, defense procurement economics, space and AI. Marc speaks in English
+            and German; professionally fluent in Spanish and French.
+          </p>
+          <blockquote class="pull">"...the top expert / analyst I have found in this field."</blockquote>
+        </div>
+        <div class="photo-row">
+          <figure>
+            <img src="img/panel-patrick-schneider-sikorsky.jpg" alt="Marc C Lange moderating a panel with Patrick Schneider-Sikorsky" loading="lazy">
+            <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Panel with Patrick Schneider-Sikorsky</figcaption>
+          </figure>
+          <figure>
+            <img src="img/speaking-session.jpg" alt="Marc C Lange on a defense panel at the European Commission" loading="lazy">
+            <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Defense panel at the European Commission</figcaption>
+          </figure>
+          <figure>
+            <img src="img/panel-kaunas-defense-investments.jpg" alt="Marc C Lange on a defense innovation panel at the Flaming Shield Conference in Kaunas" loading="lazy">
+            <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Flaming Shield Conference in Kaunas</figcaption>
+          </figure>
+        </div>
+        <div class="events">
+          <div class="event">
+            <h3>European Defence Week</h3>
+            <img class="ent-logo ent-logo--wide" src="img/logos/european-defence-week.png" alt="European Defence Week" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>IDET</h3>
+            <img class="ent-logo" src="img/logos/idet.png" alt="IDET Brno" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>Flaming Shield</h3>
+            <img class="ent-logo ent-logo--wide" src="img/logos/flaming-shield.png" alt="Flaming Shield 2025" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>International Astronautical Congress</h3>
+            <img class="ent-logo" src="img/logos/iac.png" alt="" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>European Commission</h3>
+            <img class="ent-logo" src="img/logos/ec.png" alt="" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>European Union</h3>
+            <img class="ent-logo" src="img/logos/eu.png" alt="" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="event">
+            <h3>Google I/O</h3>
+            <img class="ent-logo" src="img/logos/google-io.png" alt="" loading="lazy" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Press — stable card gallery (Swiper), outlet logos lower-right -->
+  <section class="sec" id="press">
+    <div class="wrap sec-grid">
+      <div class="sec-label reveal">Press &amp; Media</div>
+      <div class="reveal">
+        <div class="sec-head kinetic-head" style="margin-top:0">Quoted and featured in.</div>
+        <div class="sec-body">
+          <p>Cited as an expert on unmanned systems, counter-UAS, and defense procurement.</p>
+        </div>
+        <div class="swiper press-swiper" id="pressSwiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Financial Times</span><span class="press-date">June 2026</span></div>
+                <p class="press-title">Ukraine builds cheap alternative to US Patriot missiles</p>
+                <p class="press-desc">On why anti-ballistic interceptors are hard to test.</p>
+                <a class="press-link" href="https://www.ft.com/content/c5839dd4-c4e9-4503-a605-67dcef053845" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/ft.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">IEEE Spectrum</span><span class="press-date">July 2026</span></div>
+                <p class="press-title">How Cheap Ground Robots Are Rewriting Frontline Warfare in Ukraine</p>
+                <p class="press-desc">"2026 is the year of the assault UGV."</p>
+                <a class="press-link" href="https://spectrum.ieee.org/ukraine-ground-drones" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">IEEE Spectrum</span><span class="press-date">March 2026</span></div>
+                <p class="press-title">The Coming Drone-War Inflection in Ukraine</p>
+                <p class="press-desc">"The moment one operator can launch 100, 50, or even just 20 drones at once&hellip;"</p>
+                <a class="press-link" href="https://spectrum.ieee.org/autonomous-drone-warfare" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Global Venturing</span><span class="press-date">April 2025</span></div>
+                <p class="press-title">European defence tech startups can help primes stay ahead</p>
+                <p class="press-desc">Major primes "won't be able to beat startups at their game."</p>
+                <a class="press-link" href="https://globalventuring.com/corporate/europe/europes-defence-contractors-warned-to-partner-with-startups-or-lose-business/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/global-venturing.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Defence Procurement International</span><span class="press-date">June 2026</span></div>
+                <p class="press-title">Germany's Rearmament Problem</p>
+                <p class="press-desc">Op-ed on why rearmament budgets and fielded capability diverge.</p>
+                <a class="press-link" href="https://www.defenceprocurementinternational.com/features/land/procurement-germany" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/dpi.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Resilience Media</span><span class="press-date">April 2025</span></div>
+                <p class="press-title">EU &#10084; UK Defence &ndash; Again</p>
+                <p class="press-desc">Op-ed on UK-EU defense cooperation.</p>
+                <a class="press-link" href="https://resiliencemedia.co/eu-%e2%9d%a4%ef%b8%8f-uk-defence-again/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+                <img class="ent-logo" src="img/logos/resilience.png" alt="" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Defence Innovation Podcast</span><span class="press-date">October 2025</span></div>
+                <p class="press-desc">Podcast — 100-minute guest episode: "Drone Wall: Lessons from Ukraine and the Limits of Europe's Air Defence."</p>
+                <a class="press-link" href="https://creators.spotify.com/pod/show/jonassinger/episodes/Drone-Wall-Lessons-from-Ukraine-and-the-Limits-of-Europes-Air-Defence---With-Marc-C--Lange-e39nhb8" target="_blank" rel="noopener">Listen &#8599;&#xFE0E;</a>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
+                <div class="row"><span class="press-outlet">Protect Europe Podcast</span><span class="press-date">May 2026</span></div>
+                <p class="press-desc">Podcast — guest on "TechWars: How Technology is Rewriting Defense!," with hosts Martti Wallin and Colin Brown (Sparkmind Capital).</p>
+                <a class="press-link" href="https://sparkmind.capital/podcasts/pep/techwars-how-technology-is-rewriting-defense/" target="_blank" rel="noopener">Listen &#8599;&#xFE0E;</a>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-button-prev press-prev"></div>
+          <div class="swiper-button-next press-next"></div>
+          <div class="swiper-pagination press-pagination"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact — form, no exposed email address -->
+  <section class="sec" id="contact">
+    <div class="wrap sec-grid">
+      <div class="sec-label reveal">Contact</div>
+      <div class="sec-body reveal">
+        <div class="sec-head kinetic-head" style="margin-top:0;margin-bottom:8px">Get in touch.</div>
+        <form class="contact-form" id="contactForm">
+          <label>Name<input type="text" name="name" autocomplete="name" required></label>
+          <label>Email<input type="email" name="email" autocomplete="email" required></label>
+          <label>Message<textarea name="message" rows="6" required></textarea></label>
+          <!-- robot filters: honeypot field (hidden from humans) + minimum-fill-time check -->
+          <label class="cf-hp" aria-hidden="true">Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          <button type="submit" class="cf-send">Send</button>
+          <p class="cf-status" id="cfStatus" style="display:none;font-size:13px;color:var(--mut);margin:0" aria-live="polite"></p>
+        </form>
+        <p class="small">For advisory engagements, speaking invitations, or investment due diligence. Berlin · Barcelona · San Francisco.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span>© <span id="year"></span> Marc C Lange · 2.ventures</span>
+      <span><a href="https://techwars.substack.com" target="_blank" rel="noopener">TECH WARS</a> · <a href="https://www.linkedin.com/in/marcclange/" target="_blank" rel="noopener">LinkedIn</a> · <a href="#contact" data-goto="#contact" style="cursor:pointer">Contact</a> · <a href="impressum.html">Imprint</a></span>
+    </div>
+  </footer>
+  </div><!-- /.below -->
+</main>
+</div><!-- /.content -->
+
+<!-- lightbox: TECH WARS article preview -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Article preview">
+  <div class="lb-bar">
+    <div class="lb-caption" id="lbcaption"></div>
+    <div class="lb-controls">
+      <a id="lbread" href="#" target="_blank" rel="noopener">Read on Substack &#8599;&#xFE0E;</a>
+      <button type="button" id="lbprev" aria-label="Previous article">&#8592; Prev</button>
+      <button type="button" id="lbnext" aria-label="Next article">Next &#8594;</button>
+      <button type="button" id="lbclose" aria-label="Close viewer">Close &#10005;</button>
+    </div>
+  </div>
+  <div class="lb-stage">
+    <img id="lbimg" src="" alt="">
+    <button class="lb-zone prev" id="lbzoneprev" aria-label="Previous article"></button>
+    <button class="lb-zone next" id="lbzonenext" aria-label="Next article"></button>
+  </div>
+</div>
+
+<script src="vendor/swiper-bundle.min.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/ScrollToPlugin.min.js"></script>
+<script>
+(function () {
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+  /* =========================================================
+     1) Loader: percentage-driven clip-path wipe on "LOADING"
+     ========================================================= */
+  var preloads = Array.prototype.slice.call(document.querySelectorAll('.seq-preload'));
+  var fxLoader = document.getElementById('fxLoader');
+  var fxBright = document.getElementById('fxLoaderBright');
+  var fxPct = document.getElementById('fxLoaderPct');
+  var loaded = 0;
+  function markLoaded() {
+    loaded++;
+    var pct = Math.round((loaded / preloads.length) * 100);
+    fxBright.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+    fxPct.textContent = pct + '%';
+    if (loaded >= preloads.length) releaseLoader();
+  }
+  preloads.forEach(function (img) {
+    if (img.complete) markLoaded();
+    else { img.addEventListener('load', markLoaded); img.addEventListener('error', markLoaded); }
+  });
+  var loaderReleased = false;
+  function releaseLoader() {
+    if (loaderReleased) return;
+    loaderReleased = true;
+    fxLoader.classList.add('fade-out');
+    document.body.classList.remove('intro-locked');
+    ScrollTrigger.refresh();
+  }
+  setTimeout(releaseLoader, 1800); // safety timeout
+
+  /* =========================================================
+     2) Kinetic-word crossfade intro — scroll-or-time-scrubbed,
+        same pin mechanic as the reference, letterforms instead
+        of full-bleed photo frames
+     ========================================================= */
+  var frames = Array.prototype.slice.call(document.querySelectorAll('.kw-frame'));
+
+  /* fit-to-width clamp: the font-size clamp() alone still overflowed long words
+     (PROCUREMENT) at desktop widths since it scales by vw, not by glyph count.
+     el.scrollWidth understates the real overflow here (the flex-centered text
+     can paint past the box without registering as scrollable overflow), so
+     measure the actual painted text extent via a Range and shrink font-size
+     to fit the padded frame width, at every viewport width rather than a
+     single mobile breakpoint. */
+  function fitKineticWords() {
+    frames.forEach(function (el) {
+      el.style.fontSize = '';
+      var textNode = null;
+      for (var n = 0; n < el.childNodes.length; n++) {
+        if (el.childNodes[n].nodeType === 3 && el.childNodes[n].textContent.trim()) { textNode = el.childNodes[n]; break; }
+      }
+      if (!textNode) return;
+      var range = document.createRange();
+      range.selectNodeContents(textNode);
+      var textWidth = range.getBoundingClientRect().width;
+      var cs = getComputedStyle(el);
+      var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (avail > 0 && textWidth > avail) {
+        var scale = avail / textWidth;
+        el.style.fontSize = (parseFloat(cs.fontSize) * scale) + 'px';
+      }
+    });
+  }
+  fitKineticWords();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitKineticWords); }
+
+  var introTl = gsap.timeline({ paused: true });
+  for (var f = 1; f < frames.length; f++) {
+    (function (prev, next) {
+      introTl.to(prev, { opacity: 0, scale: 1.04, duration: 1, ease: 'none' }, f - 1);
+      introTl.to(next, { opacity: 1, scale: 1, duration: 1, ease: 'none' }, f - 1);
+    })(frames[f - 1], frames[f]);
+  }
+
+  var introPin = document.getElementById('introPin');
+  /* mobile: a fixed +=2400 pin range produced a ~3244px pin-spacer (the pinned hero's
+     own height plus 2400px of extra scroll runway) -- on a 390x844 phone that read as
+     3.8 empty screens, since everything inside a pinned trigger is position:fixed and
+     registers no scroll content of its own. Cap the extra runway hard on mobile so the
+     spacer stays within one viewport; the crossfade still scrubs, just over a much
+     shorter, phone-appropriate scroll distance. */
+  /* desktop scrub range cut from +=2400 to +=800 — the crossfade still scrubs at the
+     same visual pace per word, just over roughly a third of the prior dead scroll cost */
+  var introPinEnd = window.matchMedia('(max-width:767px)').matches ? '+=30' : '+=380';
+  ScrollTrigger.create({
+    trigger: introPin,
+    start: 'top top',
+    end: introPinEnd,
+    pin: true,
+    scrub: 0.35,
+    onUpdate: function (self) { introTl.progress(self.progress); }
+  });
+
+  /* `in-intro` used to be bound to the PIN's scroll range (+=2400), so it was
+     dropped the moment the pin released — but the dark .intro-pin stays on screen
+     for a further viewport-height while it scrolls away. That gap is where the
+     plain white header bar painted over the hero. Bind the class to the hero's
+     ACTUAL painted position instead, on the same ticker that drives the scrub, so
+     it can never disagree with what is on screen (a ScrollTrigger onToggle on a
+     pinned trigger does not fire reliably on a jump back to the top). */
+  function syncIntroClass() {
+    var r = introPin.getBoundingClientRect();
+    document.body.classList.toggle('in-intro', r.bottom > 0 && r.top < window.innerHeight);
+  }
+  gsap.ticker.add(syncIntroClass);
+  syncIntroClass();
+
+  var userScrolled = false;
+  var autoplayTween = null;
+  window.addEventListener('scroll', function onFirstScroll() {
+    userScrolled = true;
+    if (autoplayTween) autoplayTween.kill();
+    window.removeEventListener('scroll', onFirstScroll);
+  }, { passive: true });
+  setTimeout(function () {
+    if (userScrolled || reduceMotion) return;
+    autoplayTween = gsap.to(introTl, { progress: 1, duration: 6, ease: 'none' });
+  }, 1400);
+  if (reduceMotion) { introTl.progress(1); }
+
+  /* =========================================================
+     3) Rail overlay visibility (nav list + kinetic-stage + hint)
+     ========================================================= */
+  var rail = document.getElementById('rail');
+  var menuList = document.getElementById('menuList');
+  var kineticStage = document.getElementById('kineticStage');
+  var scrollHint = document.getElementById('scrollHint');
+  var items = Array.prototype.slice.call(menuList.querySelectorAll('.item'));
+  var navSpacers = Array.prototype.slice.call(rail.querySelectorAll('.spacer:not(.spacer--kinetic):not(.spacer--kinetic-lead)'));
+  var kwSpacers = Array.prototype.slice.call(rail.querySelectorAll('.spacer--kinetic'));
+  var kwRows = Array.prototype.slice.call(kineticStage.querySelectorAll('.kw-row'));
+
+  function showRailOverlay() {
+    menuList.classList.add('visible');
+    kineticStage.classList.add('visible');
+    // the hint invites the very first scroll only — once a beat has activated,
+    // re-entering the rail must not resurrect it over the content
+    if (!menuList.querySelector('.item.active')) scrollHint.classList.add('visible');
+    document.body.classList.add('rail-zone');
+  }
+  function hideRailOverlay() {
+    menuList.classList.remove('visible');
+    kineticStage.classList.remove('visible');
+    scrollHint.classList.remove('visible');
+    document.querySelectorAll('.rail-side').forEach(function (el) { el.classList.remove('visible'); });
+    document.body.classList.remove('rail-zone');
+  }
+  ScrollTrigger.create({
+    /* 'top top'/'bottom bottom' makes the active (visible) window exactly
+       railHeight-viewportHeight — fine when the rail is several viewports
+       tall, but at the shortened desktop rail height that window shrank to
+       a sliver (or negative/inverted), so the pinned nav + kinetic-stage
+       overlay silently never showed for most of the scroll. 'top bottom'/
+       'bottom top' covers the full railHeight+viewportHeight span instead,
+       so the overlay stays visible for the whole traversal regardless of
+       rail length. */
+    trigger: rail,
+    start: 'top bottom',
+    end: 'bottom top',
+    onEnter: showRailOverlay,
+    onEnterBack: showRailOverlay,
+    onLeave: hideRailOverlay,
+    onLeaveBack: hideRailOverlay
+  });
+
+  /* ---- 3a) pinned nav list: 4 nav spacers -> items 0-3; the kinetic group IS the
+     Writing zone (pre-final item); the last nav spacer -> Contact ---- */
+  var navRowTriggers = [];
+  function buildNavRowTriggers() {
+    navRowTriggers.forEach(function (t) { t.kill(); });
+    navRowTriggers = [];
+    var heights = items.map(function (it) { return it.offsetHeight + 10; });
+    function activate(idx) {
+      items.forEach(function (it, n) { it.classList.toggle('active', n === idx); });
+      var cum = 0;
+      for (var k = 0; k < idx; k++) cum += heights[k];
+      gsap.to(menuList, { y: -cum, duration: 0.35, ease: 'power2.out' });
+      scrollHint.classList.remove('visible');
+      document.querySelectorAll('.rail-side').forEach(function (el) {
+        el.classList.toggle('visible', el.getAttribute('data-idx') === String(idx));
+      });
+    }
+    var zones = [];
+    navSpacers.forEach(function (sp, j) {
+      zones.push({ start: sp, end: sp, idx: j }); // rows 0-4 -> About/Advisory/Speaking/Press/Writing
+    });
+    if (kwSpacers.length) {
+      // Marc: the words scrub through while Contact is the active item
+      zones.push({ start: kwSpacers[0], end: kwSpacers[kwSpacers.length - 1], idx: items.length - 1 });
+    }
+    zones.forEach(function (z) {
+      navRowTriggers.push(ScrollTrigger.create({
+        trigger: z.start,
+        endTrigger: z.end,
+        start: 'top center',
+        end: 'bottom center',
+        onToggle: function (self) { if (self.isActive) activate(z.idx); }
+      }));
+    });
+  }
+  buildNavRowTriggers();
+
+  /* ---- 3b) the kinetic-word scrub (restored original): continuous scrub per
+     row — images bleed through the giant letterforms via background-clip:text;
+     background-position pans and clip-path wipes the word open/closed at the
+     row edges. The per-row info box (right side) fades with its word. ---- */
+  var kwTriggers = [];
+  function buildKwTriggers() {
+    kwTriggers.forEach(function (t) { t.kill(); });
+    kwTriggers = [];
+    kwSpacers.forEach(function (spacer, i) {
+      var row = kwRows[i];
+      if (!row) return;
+      var big = row.querySelector('.kw-big');
+      kwTriggers.push(ScrollTrigger.create({
+        trigger: spacer,
+        start: 'top center',
+        end: 'bottom center',
+        scrub: true,
+        onUpdate: function (self) {
+          var p = self.progress;
+          var revealIn = Math.min(Math.max(p / 0.22, 0), 1);
+          var revealOut = Math.min(Math.max((p - 0.78) / 0.22, 0), 1);
+          var visible = revealIn * (1 - revealOut);
+          var closed = (1 - visible) * 50;
+          row.style.clipPath = 'inset(' + closed + '% 0 ' + closed + '% 0)';
+          row.style.opacity = Math.max(visible, 0.02);
+          row.classList.toggle('active', visible > 0.5);
+          big.style.backgroundPosition = '50% ' + (15 + p * 65) + '%';
+          big.style.transform = 'scale(' + (0.92 + visible * 0.08) + ')';
+        }
+      }));
+    });
+  }
+  buildKwTriggers();
+
+  window.addEventListener('resize', function () {
+    ScrollTrigger.refresh();
+    buildNavRowTriggers();
+    buildKwTriggers();
+    fitKineticWords();
+  });
+  // iOS Safari toggles its address bar without a matching window 'resize' event on some
+  // versions, which can leave the pinned intro/rail measurements stale; visualViewport
+  // fires reliably there, so mirror the refresh on it too (harmless where unsupported).
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () { ScrollTrigger.refresh(); });
+  }
+
+  /* =========================================================
+     4) Smooth scroll-to anchors via GSAP ScrollToPlugin
+     ========================================================= */
+  function gotoSelector(sel) {
+    var el = document.querySelector(sel);
+    if (!el) return;
+    if (document.body.classList.contains('intro-locked')) return;
+    gsap.to(window, { duration: 1, scrollTo: { y: el, offsetY: 0 }, ease: 'power2.inOut' });
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-goto]');
+    if (!a) return;
+    e.preventDefault();
+    gotoSelector(a.getAttribute('data-goto'));
+    if (navLinks.classList.contains('open')) closeNav();
+  });
+
+  /* mobile hamburger: the horizontally-scrolling nav row clipped "Contact" and had
+     no way to reach it — real toggled dropdown, every item a >=44px tap target */
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navlinks');
+  function closeNav() {
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
+  navToggle.addEventListener('click', function () {
+    var open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  /* =========================================================
+     5) Evidence gallery: laterally drifting filmstrip.
+        Continuous self-driven drift (paused on hover) plus a
+        scroll-scrubbed parallax offset on the outer wrapper —
+        keeps the haptic scrub feel even outside the pinned rail.
+     ========================================================= */
+  var evidenceRail = document.getElementById('evidenceRail');
+  var evidenceTrack = document.getElementById('evidenceTrack');
+  var originalCards = Array.prototype.slice.call(evidenceTrack.children);
+  originalCards.forEach(function (card) { evidenceTrack.appendChild(card.cloneNode(true)); });
+
+  var marqueeTween = gsap.to(evidenceTrack, { xPercent: -50, duration: 34, ease: 'none', repeat: -1 });
+  if (reduceMotion) marqueeTween.pause();
+  evidenceRail.addEventListener('mouseenter', function () { marqueeTween.pause(); });
+  evidenceRail.addEventListener('mouseleave', function () { if (!reduceMotion) marqueeTween.play(); });
+
+  ScrollTrigger.create({
+    trigger: '#techwars',
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+    onUpdate: function (self) {
+      var offset = (self.progress - 0.5) * 90;
+      evidenceRail.style.transform = 'translateX(' + offset + 'px)';
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    var card = e.target.closest('.ev-card');
+    if (!card) return;
+    openLightbox(parseInt(card.getAttribute('data-work'), 10));
+  });
+  kineticStage.addEventListener('click', function (e) {
+    var row = e.target.closest('.kw-row');
+    if (!row) return;
+    var idx = parseInt(row.getAttribute('data-idx'), 10);
+    if (isNaN(idx)) return; // name row is not an article link
+    openLightbox(idx);
+  });
+
+  /* =========================================================
+     6) Press: Swiper card gallery (restored stable layout)
+     ========================================================= */
+  new Swiper('#pressSwiper', {
+    observer: true,
+    observeParents: true,
+    slidesPerView: 1.15,
+    spaceBetween: 18,
+    breakpoints: {
+      640: { slidesPerView: 2.1 },
+      1000: { slidesPerView: 3.1 }
+    },
+    navigation: { nextEl: '.press-next', prevEl: '.press-prev' },
+    pagination: { el: '.press-pagination', clickable: true },
+    keyboard: { enabled: true }
+  });
+
+  /* =========================================================
+     6b) Contact form — address assembled at submit time only,
+         never present as plain text in the source
+     ========================================================= */
+  var cf = document.getElementById('contactForm');
+  var cfLoadedAt = Date.now();
+  cf.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var d = new FormData(cf);
+    // robot filter: honeypot filled or submitted within 3s of page load -> silently drop
+    if (d.get('company') || (Date.now() - cfLoadedAt) < 3000) return;
+    var addr = ['inquiries', '2.ventures'].join('@');
+    var subj = 'Website inquiry from ' + d.get('name');
+    var body = d.get('message') + '\n\n' + d.get('name') + '\n' + d.get('email');
+    location.href = 'mailto:' + addr + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+    var st = document.getElementById('cfStatus');
+    if (st) { st.textContent = 'Your email app should open with the message prefilled. If it does not, write to ' + addr + '.'; st.style.display = 'block'; }
+  });
+  cf.querySelector('.cf-hp input').removeAttribute('required');
+
+  /* ---------- reveal-on-scroll for text sections (drives the kinetic-head clip-path too) ---------- */
+  gsap.utils.toArray('.reveal').forEach(function (el) {
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 92%',
+      onEnter: function () { el.classList.add('in'); }
+    });
+  });
+
+  /* ---------- scrollspy nav ---------- */
+  var navAnchors = Array.prototype.slice.call(document.querySelectorAll('#navlinks a'));
+  ['about', 'techwars', 'advisory', 'speaking', 'press', 'contact'].forEach(function (id) {
+    ScrollTrigger.create({
+      trigger: '#' + id,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle: function (self) {
+        if (!self.isActive) return;
+        navAnchors.forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-goto') === '#' + id); });
+      }
+    });
+  });
+
+  /* ---------- article-preview lightbox ---------- */
+  var articles = [
+    { src: 'img/lucas-hero.jpeg', title: 'How LUCAS Delivered Epic Fury', date: '2 March 2026', url: 'https://techwars.substack.com/p/how-lucas-delivered-epic-fury' },
+    { src: 'img/far-person-vision-hero.jpg', title: 'Far-Person Vision: The Future of Strike?', date: '19 May 2026', url: 'https://techwars.substack.com/p/far-person-vision-the-future-of-strike' },
+    { src: 'img/waterworld.jpg', title: 'Waterworld: How Drones Will Reshape Shipping', date: '11 May 2026', url: 'https://techwars.substack.com/p/waterworld-how-drones-will-reshape' },
+    { src: 'img/capability-factories.jpg', title: 'Capability Factories: How to Procure', date: '20 April 2026', url: 'https://techwars.substack.com/p/capability-factories-how-to-test' },
+    { src: 'img/30-questions.jpg', title: 'The 30 Most Dangerous Questions for CUAS Startups', date: '28 February 2026', url: 'https://techwars.substack.com/p/the-30-most-dangerous-questions-for' },
+    { src: 'img/drone-dominance.jpeg', title: 'Drone Dominance: Gauntlet Phase I', date: '11 February 2026', url: 'https://techwars.substack.com/p/drone-dominance-gauntlet-phase-i' }
+  ];
+  var lb = document.getElementById('lightbox');
+  var lbimg = document.getElementById('lbimg');
+  var lbcaption = document.getElementById('lbcaption');
+  var lbread = document.getElementById('lbread');
+  var lbIndex = 0;
+  var lbOpen = false;
+
+  function lbShow(i, instant) {
+    lbIndex = (i + articles.length) % articles.length;
+    var it = articles[lbIndex];
+    lbread.href = it.url;
+    if (instant) {
+      lbimg.src = it.src; lbimg.alt = it.title;
+      lbcaption.innerHTML = '<b>' + it.title + '</b><span>TECH WARS &middot; ' + it.date + '</span>';
+      return;
+    }
+    lbimg.classList.add('swap');
+    setTimeout(function () {
+      lbimg.src = it.src; lbimg.alt = it.title;
+      lbcaption.innerHTML = '<b>' + it.title + '</b><span>TECH WARS &middot; ' + it.date + '</span>';
+      lbimg.onload = function () { lbimg.classList.remove('swap'); };
+    }, 180);
+  }
+  window.openLightbox = function (i) {
+    lbShow(i, true);
+    lbOpen = true;
+    document.body.classList.add('lb-open');
+  };
+  function closeLightbox() {
+    lbOpen = false;
+    document.body.classList.remove('lb-open');
+  }
+  document.getElementById('lbclose').addEventListener('click', closeLightbox);
+  document.getElementById('lbprev').addEventListener('click', function () { lbShow(lbIndex - 1); });
+  document.getElementById('lbnext').addEventListener('click', function () { lbShow(lbIndex + 1); });
+  document.getElementById('lbzoneprev').addEventListener('click', function () { lbShow(lbIndex - 1); });
+  document.getElementById('lbzonenext').addEventListener('click', function () { lbShow(lbIndex + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (!lbOpen) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbShow(lbIndex - 1);
+    if (e.key === 'ArrowRight') lbShow(lbIndex + 1);
+  });
+
+  ScrollTrigger.refresh();
+})();
+</script>
+</body>
+</html>

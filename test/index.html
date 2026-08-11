@@ -124,7 +124,7 @@
      clipped horizontally-scrolling nav row, which had no way to reach every item) ---------- */
   .nav-toggle{display:none}
   @media (max-width:767px){
-    .nav{flex-wrap:nowrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
+    .nav{flex-wrap:wrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
     .nav-toggle{
       display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
       width:44px;height:44px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;flex:0 0 auto;
@@ -283,7 +283,10 @@
   /* ---------- lightbox ---------- */
   .lightbox{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateX(6%);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s}
   body.lb-open .lightbox{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .1s,transform .35s ease .1s,visibility 0s}
-  .lb-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px clamp(16px,3vw,40px) 14px}
+  body.lb-open{position:fixed;left:0;right:0;overflow:hidden} /* page frozen while the preview is open */
+  .lb-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:10px 16px;flex-wrap:wrap;padding:16px clamp(16px,3vw,40px) 12px;padding-right:calc(clamp(16px,3vw,40px) + 52px)}
+  .lb-caption{flex:1 1 auto;min-width:min(70%,340px)} /* title keeps real lines instead of one word per line */
+  #lbclose{position:absolute;top:10px;right:clamp(10px,2vw,28px);width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--bg-soft);border:1px solid var(--line);border-radius:50%;font-size:15px;color:var(--ink);z-index:2;padding:0} /* always on screen, phone-sized target */
   .lb-caption b{display:block;font-size:15px;font-weight:600;margin-bottom:2px}
   .lb-caption span{font-size:12.5px;color:var(--faint)}
   .lb-controls{display:flex;gap:20px;font-size:13px;white-space:nowrap}
@@ -624,7 +627,7 @@
           </ul>
         </div>
         <figure class="sec-figure" style="max-width:280px">
-          <img src="img/marc-avatar.jpeg" alt="Marc C Lange" loading="lazy">
+          <img src="img/marc-avatar.jpeg" alt="Marc C Lange">
           <figcaption>Marc C Lange · 2 Ventures</figcaption>
         </figure>
       </div>
@@ -651,27 +654,27 @@
     <div class="evidence-rail" id="evidenceRail">
       <div class="evidence-track" id="evidenceTrack">
         <figure class="ev-card" data-work="0">
-          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover"></div>
           <figcaption>How LUCAS Delivered Epic Fury <span>· 2 March 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="1">
-          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover"></div>
           <figcaption>Far-Person Vision: The Future of Strike? <span>· 19 May 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="2">
-          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover"></div>
           <figcaption>Waterworld: How Drones Will Reshape Shipping <span>· 11 May 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="3">
-          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover"></div>
           <figcaption>Capability Factories: How to Procure <span>· 20 April 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="4">
-          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover"></div>
           <figcaption>The 30 Most Dangerous Questions for CUAS Startups <span>· 28 February 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="5">
-          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover"></div>
           <figcaption>Drone Dominance: Gauntlet Phase I <span>· 11 February 2026</span></figcaption>
         </figure>
       </div>
@@ -721,19 +724,19 @@
           </div>
         </div>
         <div class="logo-row">
-          <img src="img/logos/nasa.png" alt="NASA" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/esa.png" alt="ESA" loading="lazy" onerror="this.style.display='none'">
-          <img class="lg-sm" src="img/logos/sprind.png" alt="SPRIND" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/eda.png" alt="European Defence Agency" loading="lazy" onerror="this.style.display='none'">
-          <img class="lg-lg" src="img/logos/nato.png" alt="NATO" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/ec.png" alt="European Commission" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/eudis.png" alt="EUDIS" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/edth.png" alt="European Defence Tech Hub" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/vinnova.png" alt="Vinnova" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/google.png" alt="Google" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/nasa.png" alt="NASA" onerror="this.style.display='none'">
+          <img src="img/logos/esa.png" alt="ESA" onerror="this.style.display='none'">
+          <img class="lg-sm" src="img/logos/sprind.png" alt="SPRIND" onerror="this.style.display='none'">
+          <img src="img/logos/eda.png" alt="European Defence Agency" onerror="this.style.display='none'">
+          <img class="lg-lg" src="img/logos/nato.png" alt="NATO" onerror="this.style.display='none'">
+          <img src="img/logos/ec.png" alt="European Commission" onerror="this.style.display='none'">
+          <img src="img/logos/eudis.png" alt="EUDIS" onerror="this.style.display='none'">
+          <img src="img/logos/edth.png" alt="European Defence Tech Hub" onerror="this.style.display='none'">
+          <img src="img/logos/vinnova.png" alt="Vinnova" onerror="this.style.display='none'">
+          <img src="img/logos/google.png" alt="Google" onerror="this.style.display='none'">
         </div>
         <figure class="sec-figure" style="max-width:420px">
-          <img src="img/field-testing.jpg" alt="Field-testing counter-UAS kit: drone evaluation flight at a test range" loading="lazy">
+          <img src="img/field-testing.jpg" alt="Field-testing counter-UAS kit: drone evaluation flight at a test range">
           <figcaption>Field-testing, Anti-Drone Response 2.0. Photo: <a href="https://felixadler.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Felix Adler</a></figcaption>
         </figure>
       </div>
@@ -756,46 +759,46 @@
         </div>
         <div class="photo-row">
           <figure>
-            <img src="img/panel-patrick-schneider-sikorsky.jpg" alt="Marc C Lange moderating a panel with Patrick Schneider-Sikorsky" loading="lazy">
+            <img src="img/panel-patrick-schneider-sikorsky.jpg" alt="Marc C Lange moderating a panel with Patrick Schneider-Sikorsky">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Panel with Patrick Schneider-Sikorsky</figcaption>
           </figure>
           <figure>
-            <img src="img/speaking-session.jpg" alt="Marc C Lange on a defense panel at the European Commission" loading="lazy">
+            <img src="img/speaking-session.jpg" alt="Marc C Lange on a defense panel at the European Commission">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Defense panel at the European Commission</figcaption>
           </figure>
           <figure>
-            <img src="img/panel-kaunas-defense-investments.jpg" alt="Marc C Lange on a defense innovation panel at the Flaming Shield Conference in Kaunas" loading="lazy">
+            <img src="img/panel-kaunas-defense-investments.jpg" alt="Marc C Lange on a defense innovation panel at the Flaming Shield Conference in Kaunas">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Flaming Shield Conference in Kaunas</figcaption>
           </figure>
         </div>
         <div class="events">
           <div class="event">
             <h3>European Defence Week</h3>
-            <img class="ent-logo ent-logo--wide" src="img/logos/european-defence-week.png" alt="European Defence Week" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo ent-logo--wide" src="img/logos/european-defence-week.png" alt="European Defence Week" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>IDET</h3>
-            <img class="ent-logo" src="img/logos/idet.png" alt="IDET Brno" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/idet.png" alt="IDET Brno" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>Flaming Shield</h3>
-            <img class="ent-logo ent-logo--wide" src="img/logos/flaming-shield.png" alt="Flaming Shield 2025" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo ent-logo--wide" src="img/logos/flaming-shield.png" alt="Flaming Shield 2025" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>International Astronautical Congress</h3>
-            <img class="ent-logo" src="img/logos/iac.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/iac.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>European Commission</h3>
-            <img class="ent-logo" src="img/logos/ec.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/ec.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>European Union</h3>
-            <img class="ent-logo" src="img/logos/eu.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/eu.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>Google I/O</h3>
-            <img class="ent-logo" src="img/logos/google-io.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/google-io.png" alt="" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
@@ -819,7 +822,7 @@
                 <p class="press-title">Ukraine builds cheap alternative to US Patriot missiles</p>
                 <p class="press-desc">On why anti-ballistic interceptors are hard to test.</p>
                 <a class="press-link" href="https://www.ft.com/content/c5839dd4-c4e9-4503-a605-67dcef053845" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ft.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ft.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -828,7 +831,7 @@
                 <p class="press-title">How Cheap Ground Robots Are Rewriting Frontline Warfare in Ukraine</p>
                 <p class="press-desc">"2026 is the year of the assault UGV."</p>
                 <a class="press-link" href="https://spectrum.ieee.org/ukraine-ground-drones" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -837,7 +840,7 @@
                 <p class="press-title">The Coming Drone-War Inflection in Ukraine</p>
                 <p class="press-desc">"The moment one operator can launch 100, 50, or even just 20 drones at once&hellip;"</p>
                 <a class="press-link" href="https://spectrum.ieee.org/autonomous-drone-warfare" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -846,7 +849,7 @@
                 <p class="press-title">European defence tech startups can help primes stay ahead</p>
                 <p class="press-desc">Major primes "won't be able to beat startups at their game."</p>
                 <a class="press-link" href="https://globalventuring.com/corporate/europe/europes-defence-contractors-warned-to-partner-with-startups-or-lose-business/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/global-venturing.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/global-venturing.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -855,7 +858,7 @@
                 <p class="press-title">Germany's Rearmament Problem</p>
                 <p class="press-desc">Op-ed on why rearmament budgets and fielded capability diverge.</p>
                 <a class="press-link" href="https://www.defenceprocurementinternational.com/features/land/procurement-germany" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/dpi.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/dpi.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -864,7 +867,7 @@
                 <p class="press-title">EU &#10084; UK Defence &ndash; Again</p>
                 <p class="press-desc">Op-ed on UK-EU defense cooperation.</p>
                 <a class="press-link" href="https://resiliencemedia.co/eu-%e2%9d%a4%ef%b8%8f-uk-defence-again/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/resilience.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/resilience.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -928,7 +931,7 @@
       <a id="lbread" href="#" target="_blank" rel="noopener">Read on Substack &#8599;&#xFE0E;</a>
       <button type="button" id="lbprev" aria-label="Previous article">&#8592; Prev</button>
       <button type="button" id="lbnext" aria-label="Next article">Next &#8594;</button>
-      <button type="button" id="lbclose" aria-label="Close viewer">Close &#10005;</button>
+      <button type="button" id="lbclose" aria-label="Close viewer">&#10005;</button>
     </div>
   </div>
   <div class="lb-stage">
@@ -1115,15 +1118,20 @@
   /* ---- 3a) pinned nav list: 4 nav spacers -> items 0-3; the kinetic group IS the
      Writing zone (pre-final item); the last nav spacer -> Contact ---- */
   var navRowTriggers = [];
+  var menuBeatY = 0, menuExitPx = 0;
   function buildNavRowTriggers() {
     navRowTriggers.forEach(function (t) { t.kill(); });
     navRowTriggers = [];
+    menuExitPx = 0;
     var heights = items.map(function (it) { return it.offsetHeight + 10; });
     function activate(idx) {
       items.forEach(function (it, n) { it.classList.toggle('active', n === idx); });
       var cum = 0;
       for (var k = 0; k < idx; k++) cum += heights[k];
-      gsap.to(menuList, { y: -cum, duration: 0.35, ease: 'power2.out' });
+      // cap: the list's top edge never rides into the status-bar zone
+      var menuTopPx = parseFloat(getComputedStyle(menuList).top) || 0;
+      menuBeatY = -Math.min(cum, Math.max(0, menuTopPx - 70));
+      gsap.to(menuList, { y: menuBeatY - menuExitPx, duration: 0.35, ease: 'power2.out' });
       scrollHint.classList.remove('visible');
       document.querySelectorAll('.rail-side').forEach(function (el) {
         el.classList.toggle('visible', el.getAttribute('data-idx') === String(idx));
@@ -1146,6 +1154,19 @@
         onToggle: function (self) { if (self.isActive) activate(z.idx); }
       }));
     });
+    // exit: over the rail's final stretch the whole menu rides up and off the
+    // screen with the scroll, instead of lingering and then blinking away
+    navRowTriggers.push(ScrollTrigger.create({
+      trigger: rail,
+      start: 'bottom 85%',
+      end: 'bottom 15%',
+      scrub: true,
+      onUpdate: function (self) {
+        var travel = (parseFloat(getComputedStyle(menuList).top) || 0) + menuList.offsetHeight + 60;
+        menuExitPx = self.progress * travel;
+        gsap.set(menuList, { y: menuBeatY - menuExitPx });
+      }
+    }));
   }
   buildNavRowTriggers();
 
@@ -1361,14 +1382,19 @@
       lbimg.onload = function () { lbimg.classList.remove('swap'); };
     }, 180);
   }
+  var lbSavedY = 0;
   window.openLightbox = function (i) {
     lbShow(i, true);
     lbOpen = true;
+    lbSavedY = window.scrollY;
+    document.body.style.top = -lbSavedY + 'px';
     document.body.classList.add('lb-open');
   };
   function closeLightbox() {
     lbOpen = false;
     document.body.classList.remove('lb-open');
+    document.body.style.top = '';
+    window.scrollTo(0, lbSavedY);
   }
   document.getElementById('lbclose').addEventListener('click', closeLightbox);
   document.getElementById('lbprev').addEventListener('click', function () { lbShow(lbIndex - 1); });

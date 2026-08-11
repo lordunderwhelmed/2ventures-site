@@ -35,8 +35,13 @@
     /* iOS Safari's address bar resizes the visual viewport after 100vh is measured, which
        can desync the GSAP-pinned intro from the layout beneath it. 100dvh tracks the real
        viewport; the 100vh line above stays as the fallback for browsers without dvh. */
-    body.intro-locked{height:100dvh}
-    .intro-pin{height:100dvh}
+    /* svh, not dvh: dvh changes size whenever Safari's toolbar collapses while
+       scrolling — and since the hero is the page's first element, the whole
+       document shifted under the finger on every toggle. svh is measured once
+       and stays put. (The iframed artifact never sees toolbar resizes, which
+       is why it scrolled smoothly with identical logic.) */
+    body.intro-locked{height:100svh}
+    .intro-pin{height:100svh}
   }
   img{display:block;width:100%;height:auto}
   a{color:inherit;text-decoration:none}
@@ -119,7 +124,7 @@
      clipped horizontally-scrolling nav row, which had no way to reach every item) ---------- */
   .nav-toggle{display:none}
   @media (max-width:767px){
-    .nav{flex-wrap:nowrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
+    .nav{flex-wrap:wrap;flex-direction:row;align-items:center;justify-content:space-between;gap:9px;padding:14px 0 10px}
     .nav-toggle{
       display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
       width:44px;height:44px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;flex:0 0 auto;
@@ -153,10 +158,23 @@
   .rail{position:relative;padding-top:4vh;padding-bottom:3vh}
   .spacer[data-row="0"]{height:7vh}
   .spacer{height:80px}
-  @media (min-width:768px){.spacer{height:28px}}
+  @media (min-width:768px){
+    /* rail runway restored: every beat must fire AFTER the hero has fully
+       scrolled off (the in-intro rule suppresses all rail overlays until then)
+       and needs real dwell to be read. 60vh of lead-in clears the hero's
+       pin+exit distance; each nav beat then holds 40vh, each kinetic word 30vh.
+       The previous 28px/50px spacers packed the whole sequence inside the
+       suppressed window — the quotes never appeared and the menu became
+       visible already sitting on Writing. */
+    /* tail: the last word's zone ends when its spacer crosses viewport center,
+       so the section below needs at least half a viewport of runway before it
+       may enter — otherwise About slides up underneath the closing word */
+    .rail{padding-top:60vh;padding-bottom:50vh}
+    .spacer,.spacer[data-row="0"]{height:40vh}
+    .spacer[data-row="3"]{height:18vh} /* Press carries no quote (Marc) — quick tick, not a long empty stage */
+  }
   .spacer.spacer--kinetic{height:170px}
-  @media (min-width:768px){.spacer.spacer--kinetic{height:50px}}
-  .spacer.spacer--kinetic-lead{height:7vh}
+  @media (min-width:768px){.spacer.spacer--kinetic{height:30vh}}
   /* mobile: the pinned ghost nav (.menu-list) and the kinetic word scrub (.kinetic-stage)
      are both position:fixed overlays that never reserve their own scroll space — the
      .rail spacers below were sized to give THEM room to scrub, but on mobile those
@@ -164,11 +182,13 @@
      the inline .rail-mobile-quotes cards, so the spacers collapse to a minimal amount
      of breathing room instead of reserving several empty screens. */
   @media (max-width:767px){
-    .rail{padding-top:1vh;padding-bottom:1vh}
-    .spacer[data-row="0"]{height:4vh}
-    .spacer{height:8px}
-    .spacer.spacer--kinetic{height:8px}
-    .spacer.spacer--kinetic-lead{height:2vh}
+    /* phones run the same scrub beats as desktop (Marc: mobile renders down to
+       the same content). Lead-in clears the hero (its +30px pin plus one
+       viewport of exit) before the first beat fires; beats sized for a phone. */
+    .rail{padding-top:58vh;padding-bottom:50vh}
+    .spacer,.spacer[data-row="0"]{height:36vh}
+    .spacer[data-row="3"]{height:18vh}
+    .spacer.spacer--kinetic{height:30vh}
   }
   /* Writing quote: same centered position + format as the other rail quotes (Marc) */
   .rail-side[data-idx="4"] p{font-size:clamp(18px,2vw,26px)}
@@ -180,9 +200,17 @@
   }
   .menu-list.visible{opacity:1}
   @media (min-width:768px){.menu-list{left:18%}}
-  /* ghost menu: fixed, mix-blend-mode:difference, unreachable on touch (looks like
-     nav, cannot be tapped reliably) — replaced on mobile by the real hamburger nav */
-  @media (max-width:767px){.menu-list{display:none}}
+  /* portrait phones (Marc): the vertical menu shows here too — centered in the
+     upper zone, tappable; the beat content (quotes/words) renders below it.
+     Centering uses auto margins, NOT translateX — the beat animation writes a
+     transform (translateY) that would overwrite it. Solid colors instead of
+     mix-blend-mode: the rail background is white, and blend-on-fixed is an
+     iOS Safari compositing hazard. */
+  @media (max-width:767px){
+    .menu-list{left:0;right:0;width:max-content;margin:0 auto;top:20%;mix-blend-mode:normal;text-align:center}
+    .menu-list .item{display:block;height:auto;line-height:1.15;font-size:1.2rem;margin-bottom:.85rem;padding:.2rem .6rem;color:var(--faint)}
+    .menu-list .item.active{height:auto;font-size:1.45rem;color:var(--ink);font-weight:600}
+  }
   .item{display:table;height:2.25rem;font-size:1.4rem;line-height:2.25rem;font-weight:400;white-space:nowrap;color:var(--menu-text);pointer-events:none;cursor:pointer;margin-bottom:.6rem;transition:height .1s cubic-bezier(.25,.46,.45,.94)}
   .menu-list.visible .item{pointer-events:all}
   @media (min-width:768px){.item{height:2.5rem;font-size:1.875rem;margin-bottom:.85rem}}
@@ -191,10 +219,8 @@
 
   .kinetic-stage{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .2s ease}
   .kinetic-stage.visible{opacity:1}
-  /* mobile: the fixed-position word scrub reserves no scroll space of its own and the
-     rail spacers driving it are collapsed above — dropped on mobile in favour of the
-     inline .rail-mobile-quotes cards (same underlying quotes, always visible, tappable) */
-  @media (max-width:767px){.kinetic-stage{display:none}}
+  /* mobile keeps the word scrub — the rail spacers above now reserve real
+     scroll distance on phones too (Marc: same content as desktop) */
   .kw-row{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.4vw,18px);opacity:0;pointer-events:none;will-change:clip-path,opacity,transform;padding:0 6vw;text-align:center}
   .kinetic-stage.visible .kw-row.active{pointer-events:all}
   .kw-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);opacity:0;transition:opacity .3s ease}
@@ -216,19 +242,20 @@
   .rail-side p{font-size:clamp(18px,2vw,26px);font-weight:400;line-height:1.45;letter-spacing:-.01em;color:var(--ink)}
   .rail-side p .mut{color:var(--mut)}
   .rail-side.visible{opacity:1}
-  @media (max-width:767px){.rail-side{display:none}}
-  @media (min-width:768px){.statement{display:none}}
+  /* phones: quotes render in the lower zone, below the centered menu (Marc) */
+  @media (max-width:767px){
+    .rail-side{left:8%;right:8%;top:auto;bottom:10%;transform:none}
+    .rail-side p{font-size:16px}
+    .kw-row{padding-top:34vh} /* the Contact words center in the lower zone too */
+  }
+  /* the statement renders as the About beat of the rail on every width */
+  .statement{display:none}
 
   /* mobile-only: same quote content as the desktop .rail-side overlay (data-idx 1,2,4 —
      idx 0 already renders inline via .statement above), shown as plain readable cards
      instead of a fixed pinned overlay that only ever appeared during a scroll-scrub */
+  /* retired: phones now get the real scrub beats instead of static stand-in cards */
   .rail-mobile-quotes{display:none}
-  @media (max-width:767px){
-    .rail-mobile-quotes{display:grid;gap:14px;padding:22px clamp(16px,3vw,40px) 6px}
-    .rail-mobile-quotes .rmq-card{padding:16px 18px;border:1px solid var(--line);border-radius:2px}
-    .rail-mobile-quotes .rmq-card p{font-size:14.5px;line-height:1.55;color:var(--ink)}
-    .rail-mobile-quotes .rmq-card p .mut{color:var(--mut);display:block;margin-top:6px;font-size:13px}
-  }
 
   .scroll-hint{pointer-events:none;position:fixed;left:12.5%;bottom:8vh;color:var(--menu-text);font-size:1.1rem;display:flex;align-items:center;gap:.4rem;mix-blend-mode:difference;opacity:0;transition:opacity .3s ease;z-index:10}
   @media (min-width:768px){.scroll-hint{left:18%}}
@@ -256,7 +283,10 @@
   /* ---------- lightbox ---------- */
   .lightbox{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateX(6%);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s}
   body.lb-open .lightbox{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .1s,transform .35s ease .1s,visibility 0s}
-  .lb-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px clamp(16px,3vw,40px) 14px}
+  body.lb-open{position:fixed;left:0;right:0;overflow:hidden} /* page frozen while the preview is open */
+  .lb-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:10px 16px;flex-wrap:wrap;padding:16px clamp(16px,3vw,40px) 12px;padding-right:calc(clamp(16px,3vw,40px) + 52px)}
+  .lb-caption{flex:1 1 auto;min-width:min(70%,340px)} /* title keeps real lines instead of one word per line */
+  #lbclose{position:absolute;top:10px;right:clamp(10px,2vw,28px);width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--bg-soft);border:1px solid var(--line);border-radius:50%;font-size:15px;color:var(--ink);z-index:2;padding:0} /* always on screen, phone-sized target */
   .lb-caption b{display:block;font-size:15px;font-weight:600;margin-bottom:2px}
   .lb-caption span{font-size:12.5px;color:var(--faint)}
   .lb-controls{display:flex;gap:20px;font-size:13px;white-space:nowrap}
@@ -462,15 +492,15 @@
     <div class="spacer" data-row="1"></div>
     <div class="spacer" data-row="2"></div>
     <div class="spacer" data-row="3"></div>
-    <!-- Writing lead-in: zone activates, quote shows alone, THEN the words begin -->
-    <div class="spacer spacer--kinetic-lead"></div>
+    <!-- Writing: the four-star General quote holds this whole beat (Marc) -->
+    <div class="spacer" data-row="4"></div>
+    <!-- Contact: the six image-filled words scrub through while Contact is active (Marc) -->
     <div class="spacer spacer--kinetic" data-work="0"></div>
     <div class="spacer spacer--kinetic" data-work="1"></div>
     <div class="spacer spacer--kinetic" data-work="2"></div>
     <div class="spacer spacer--kinetic" data-work="3"></div>
     <div class="spacer spacer--kinetic" data-work="4"></div>
     <div class="spacer spacer--kinetic" data-work="5"></div>
-    <div class="spacer" data-row="contact"></div>
   </div>
 
   <div class="menu-overlay" id="menuOverlay">
@@ -597,7 +627,7 @@
           </ul>
         </div>
         <figure class="sec-figure" style="max-width:280px">
-          <img src="img/marc-avatar.jpeg" alt="Marc C Lange" loading="lazy">
+          <img src="img/marc-avatar.jpeg" alt="Marc C Lange">
           <figcaption>Marc C Lange · 2 Ventures</figcaption>
         </figure>
       </div>
@@ -624,27 +654,27 @@
     <div class="evidence-rail" id="evidenceRail">
       <div class="evidence-track" id="evidenceTrack">
         <figure class="ev-card" data-work="0">
-          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover"></div>
           <figcaption>How LUCAS Delivered Epic Fury <span>· 2 March 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="1">
-          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover"></div>
           <figcaption>Far-Person Vision: The Future of Strike? <span>· 19 May 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="2">
-          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover"></div>
           <figcaption>Waterworld: How Drones Will Reshape Shipping <span>· 11 May 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="3">
-          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover"></div>
           <figcaption>Capability Factories: How to Procure <span>· 20 April 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="4">
-          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover"></div>
           <figcaption>The 30 Most Dangerous Questions for CUAS Startups <span>· 28 February 2026</span></figcaption>
         </figure>
         <figure class="ev-card" data-work="5">
-          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover" loading="lazy"></div>
+          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover"></div>
           <figcaption>Drone Dominance: Gauntlet Phase I <span>· 11 February 2026</span></figcaption>
         </figure>
       </div>
@@ -694,19 +724,19 @@
           </div>
         </div>
         <div class="logo-row">
-          <img src="img/logos/nasa.png" alt="NASA" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/esa.png" alt="ESA" loading="lazy" onerror="this.style.display='none'">
-          <img class="lg-sm" src="img/logos/sprind.png" alt="SPRIND" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/eda.png" alt="European Defence Agency" loading="lazy" onerror="this.style.display='none'">
-          <img class="lg-lg" src="img/logos/nato.png" alt="NATO" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/ec.png" alt="European Commission" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/eudis.png" alt="EUDIS" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/edth.png" alt="European Defence Tech Hub" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/vinnova.png" alt="Vinnova" loading="lazy" onerror="this.style.display='none'">
-          <img src="img/logos/google.png" alt="Google" loading="lazy" onerror="this.style.display='none'">
+          <img src="img/logos/nasa.png" alt="NASA" onerror="this.style.display='none'">
+          <img src="img/logos/esa.png" alt="ESA" onerror="this.style.display='none'">
+          <img class="lg-sm" src="img/logos/sprind.png" alt="SPRIND" onerror="this.style.display='none'">
+          <img src="img/logos/eda.png" alt="European Defence Agency" onerror="this.style.display='none'">
+          <img class="lg-lg" src="img/logos/nato.png" alt="NATO" onerror="this.style.display='none'">
+          <img src="img/logos/ec.png" alt="European Commission" onerror="this.style.display='none'">
+          <img src="img/logos/eudis.png" alt="EUDIS" onerror="this.style.display='none'">
+          <img src="img/logos/edth.png" alt="European Defence Tech Hub" onerror="this.style.display='none'">
+          <img src="img/logos/vinnova.png" alt="Vinnova" onerror="this.style.display='none'">
+          <img src="img/logos/google.png" alt="Google" onerror="this.style.display='none'">
         </div>
         <figure class="sec-figure" style="max-width:420px">
-          <img src="img/field-testing.jpg" alt="Field-testing counter-UAS kit: drone evaluation flight at a test range" loading="lazy">
+          <img src="img/field-testing.jpg" alt="Field-testing counter-UAS kit: drone evaluation flight at a test range">
           <figcaption>Field-testing, Anti-Drone Response 2.0. Photo: <a href="https://felixadler.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Felix Adler</a></figcaption>
         </figure>
       </div>
@@ -729,46 +759,46 @@
         </div>
         <div class="photo-row">
           <figure>
-            <img src="img/panel-patrick-schneider-sikorsky.jpg" alt="Marc C Lange moderating a panel with Patrick Schneider-Sikorsky" loading="lazy">
+            <img src="img/panel-patrick-schneider-sikorsky.jpg" alt="Marc C Lange moderating a panel with Patrick Schneider-Sikorsky">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Panel with Patrick Schneider-Sikorsky</figcaption>
           </figure>
           <figure>
-            <img src="img/speaking-session.jpg" alt="Marc C Lange on a defense panel at the European Commission" loading="lazy">
+            <img src="img/speaking-session.jpg" alt="Marc C Lange on a defense panel at the European Commission">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Defense panel at the European Commission</figcaption>
           </figure>
           <figure>
-            <img src="img/panel-kaunas-defense-investments.jpg" alt="Marc C Lange on a defense innovation panel at the Flaming Shield Conference in Kaunas" loading="lazy">
+            <img src="img/panel-kaunas-defense-investments.jpg" alt="Marc C Lange on a defense innovation panel at the Flaming Shield Conference in Kaunas">
             <figcaption style="margin-top:9px;font-size:12.5px;color:var(--faint)">Flaming Shield Conference in Kaunas</figcaption>
           </figure>
         </div>
         <div class="events">
           <div class="event">
             <h3>European Defence Week</h3>
-            <img class="ent-logo ent-logo--wide" src="img/logos/european-defence-week.png" alt="European Defence Week" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo ent-logo--wide" src="img/logos/european-defence-week.png" alt="European Defence Week" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>IDET</h3>
-            <img class="ent-logo" src="img/logos/idet.png" alt="IDET Brno" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/idet.png" alt="IDET Brno" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>Flaming Shield</h3>
-            <img class="ent-logo ent-logo--wide" src="img/logos/flaming-shield.png" alt="Flaming Shield 2025" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo ent-logo--wide" src="img/logos/flaming-shield.png" alt="Flaming Shield 2025" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>International Astronautical Congress</h3>
-            <img class="ent-logo" src="img/logos/iac.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/iac.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>European Commission</h3>
-            <img class="ent-logo" src="img/logos/ec.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/ec.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>European Union</h3>
-            <img class="ent-logo" src="img/logos/eu.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/eu.png" alt="" onerror="this.style.display='none'">
           </div>
           <div class="event">
             <h3>Google I/O</h3>
-            <img class="ent-logo" src="img/logos/google-io.png" alt="" loading="lazy" onerror="this.style.display='none'">
+            <img class="ent-logo" src="img/logos/google-io.png" alt="" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
@@ -792,7 +822,7 @@
                 <p class="press-title">Ukraine builds cheap alternative to US Patriot missiles</p>
                 <p class="press-desc">On why anti-ballistic interceptors are hard to test.</p>
                 <a class="press-link" href="https://www.ft.com/content/c5839dd4-c4e9-4503-a605-67dcef053845" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ft.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ft.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -801,7 +831,7 @@
                 <p class="press-title">How Cheap Ground Robots Are Rewriting Frontline Warfare in Ukraine</p>
                 <p class="press-desc">"2026 is the year of the assault UGV."</p>
                 <a class="press-link" href="https://spectrum.ieee.org/ukraine-ground-drones" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -810,7 +840,7 @@
                 <p class="press-title">The Coming Drone-War Inflection in Ukraine</p>
                 <p class="press-desc">"The moment one operator can launch 100, 50, or even just 20 drones at once&hellip;"</p>
                 <a class="press-link" href="https://spectrum.ieee.org/autonomous-drone-warfare" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/ieee-spectrum.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -819,7 +849,7 @@
                 <p class="press-title">European defence tech startups can help primes stay ahead</p>
                 <p class="press-desc">Major primes "won't be able to beat startups at their game."</p>
                 <a class="press-link" href="https://globalventuring.com/corporate/europe/europes-defence-contractors-warned-to-partner-with-startups-or-lose-business/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/global-venturing.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/global-venturing.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -828,7 +858,7 @@
                 <p class="press-title">Germany's Rearmament Problem</p>
                 <p class="press-desc">Op-ed on why rearmament budgets and fielded capability diverge.</p>
                 <a class="press-link" href="https://www.defenceprocurementinternational.com/features/land/procurement-germany" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/dpi.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/dpi.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -837,7 +867,7 @@
                 <p class="press-title">EU &#10084; UK Defence &ndash; Again</p>
                 <p class="press-desc">Op-ed on UK-EU defense cooperation.</p>
                 <a class="press-link" href="https://resiliencemedia.co/eu-%e2%9d%a4%ef%b8%8f-uk-defence-again/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
-                <img class="ent-logo" src="img/logos/resilience.png" alt="" loading="lazy" onerror="this.style.display='none'">
+                <img class="ent-logo" src="img/logos/resilience.png" alt="" onerror="this.style.display='none'">
               </div>
             </div>
             <div class="swiper-slide">
@@ -901,7 +931,7 @@
       <a id="lbread" href="#" target="_blank" rel="noopener">Read on Substack &#8599;&#xFE0E;</a>
       <button type="button" id="lbprev" aria-label="Previous article">&#8592; Prev</button>
       <button type="button" id="lbnext" aria-label="Next article">Next &#8594;</button>
-      <button type="button" id="lbclose" aria-label="Close viewer">Close &#10005;</button>
+      <button type="button" id="lbclose" aria-label="Close viewer">&#10005;</button>
     </div>
   </div>
   <div class="lb-stage">
@@ -1055,7 +1085,9 @@
   function showRailOverlay() {
     menuList.classList.add('visible');
     kineticStage.classList.add('visible');
-    scrollHint.classList.add('visible');
+    // the hint invites the very first scroll only — once a beat has activated,
+    // re-entering the rail must not resurrect it over the content
+    if (!menuList.querySelector('.item.active')) scrollHint.classList.add('visible');
     document.body.classList.add('rail-zone');
   }
   function hideRailOverlay() {
@@ -1086,29 +1118,32 @@
   /* ---- 3a) pinned nav list: 4 nav spacers -> items 0-3; the kinetic group IS the
      Writing zone (pre-final item); the last nav spacer -> Contact ---- */
   var navRowTriggers = [];
+  var menuBeatY = 0, menuExitPx = 0;
   function buildNavRowTriggers() {
     navRowTriggers.forEach(function (t) { t.kill(); });
     navRowTriggers = [];
+    menuExitPx = 0;
     var heights = items.map(function (it) { return it.offsetHeight + 10; });
     function activate(idx) {
       items.forEach(function (it, n) { it.classList.toggle('active', n === idx); });
       var cum = 0;
       for (var k = 0; k < idx; k++) cum += heights[k];
-      gsap.to(menuList, { y: -cum, duration: 0.35, ease: 'power2.out' });
+      // cap: the list's top edge never rides into the status-bar zone
+      var menuTopPx = parseFloat(getComputedStyle(menuList).top) || 0;
+      menuBeatY = -Math.min(cum, Math.max(0, menuTopPx - 70));
+      gsap.to(menuList, { y: menuBeatY - menuExitPx, duration: 0.35, ease: 'power2.out' });
       scrollHint.classList.remove('visible');
       document.querySelectorAll('.rail-side').forEach(function (el) {
-        if (el.getAttribute('data-idx') === '4') return; // Writing quote: lead-in trigger only
         el.classList.toggle('visible', el.getAttribute('data-idx') === String(idx));
       });
     }
     var zones = [];
     navSpacers.forEach(function (sp, j) {
-      var idx = (j < navSpacers.length - 1) ? j : items.length - 1; // last spacer -> Contact
-      zones.push({ start: sp, end: sp, idx: idx });
+      zones.push({ start: sp, end: sp, idx: j }); // rows 0-4 -> About/Advisory/Speaking/Press/Writing
     });
     if (kwSpacers.length) {
-      var lead = document.querySelector('.spacer--kinetic-lead');
-      zones.push({ start: lead || kwSpacers[0], end: kwSpacers[kwSpacers.length - 1], idx: items.length - 2 }); // Writing
+      // Marc: the words scrub through while Contact is the active item
+      zones.push({ start: kwSpacers[0], end: kwSpacers[kwSpacers.length - 1], idx: items.length - 1 });
     }
     zones.forEach(function (z) {
       navRowTriggers.push(ScrollTrigger.create({
@@ -1119,19 +1154,19 @@
         onToggle: function (self) { if (self.isActive) activate(z.idx); }
       }));
     });
-    // the General's quote shows ONLY during the Writing lead-in beat, then yields to the words
-    var leadSp = document.querySelector('.spacer--kinetic-lead');
-    if (leadSp) {
-      navRowTriggers.push(ScrollTrigger.create({
-        trigger: leadSp,
-        start: 'top center',
-        end: 'bottom center',
-        onToggle: function (self) {
-          var q = document.querySelector('.rail-side[data-idx="4"]');
-          if (q) q.classList.toggle('visible', self.isActive);
-        }
-      }));
-    }
+    // exit: over the rail's final stretch the whole menu rides up and off the
+    // screen with the scroll, instead of lingering and then blinking away
+    navRowTriggers.push(ScrollTrigger.create({
+      trigger: rail,
+      start: 'bottom 85%',
+      end: 'bottom 15%',
+      scrub: true,
+      onUpdate: function (self) {
+        var travel = (parseFloat(getComputedStyle(menuList).top) || 0) + menuList.offsetHeight + 60;
+        menuExitPx = self.progress * travel;
+        gsap.set(menuList, { y: menuBeatY - menuExitPx });
+      }
+    }));
   }
   buildNavRowTriggers();
 
@@ -1169,18 +1204,21 @@
   }
   buildKwTriggers();
 
+  /* Rebuild the scroll machinery ONLY when the width changes (rotation, real
+     window resize). iOS Safari fires resize events every time its toolbar
+     collapses/expands during scrolling — height-only changes — and rebuilding
+     all triggers mid-scroll was the jitter filmed on the live site. The
+     visualViewport mirror listener existed to catch exactly those toolbar
+     events, i.e. it amplified the problem, so it is gone. */
+  var lastResizeW = window.innerWidth;
   window.addEventListener('resize', function () {
+    if (window.innerWidth === lastResizeW) return;
+    lastResizeW = window.innerWidth;
     ScrollTrigger.refresh();
     buildNavRowTriggers();
     buildKwTriggers();
     fitKineticWords();
   });
-  // iOS Safari toggles its address bar without a matching window 'resize' event on some
-  // versions, which can leave the pinned intro/rail measurements stale; visualViewport
-  // fires reliably there, so mirror the refresh on it too (harmless where unsupported).
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function () { ScrollTrigger.refresh(); });
-  }
 
   /* =========================================================
      4) Smooth scroll-to anchors via GSAP ScrollToPlugin
@@ -1344,14 +1382,19 @@
       lbimg.onload = function () { lbimg.classList.remove('swap'); };
     }, 180);
   }
+  var lbSavedY = 0;
   window.openLightbox = function (i) {
     lbShow(i, true);
     lbOpen = true;
+    lbSavedY = window.scrollY;
+    document.body.style.top = -lbSavedY + 'px';
     document.body.classList.add('lb-open');
   };
   function closeLightbox() {
     lbOpen = false;
     document.body.classList.remove('lb-open');
+    document.body.style.top = '';
+    window.scrollTo(0, lbSavedY);
   }
   document.getElementById('lbclose').addEventListener('click', closeLightbox);
   document.getElementById('lbprev').addEventListener('click', function () { lbShow(lbIndex - 1); });

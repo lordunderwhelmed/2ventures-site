@@ -623,6 +623,8 @@
             <li><b>EUDIS</b><span>Mentor, European Defence Fund</span></li>
             <li><b>EDA</b><span>Accredited Member, Autonomous Systems Community of Interest</span></li>
             <li><b>ISU</b><span>Governing Board Member, International Space University</span></li>
+            <li><b>Roxolani</b><span>Advisory Board Member, Roxolani Trust</span></li>
+            <li><b>NSS</b><span>Member of the National Space Society</span></li>
             <li><b>Harvard Business</b><span>Operational Excellence Leadership</span></li>
           </ul>
         </div>
@@ -922,24 +924,6 @@
   </div><!-- /.below -->
 </main>
 </div><!-- /.content -->
-
-<!-- lightbox: TECH WARS article preview -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Article preview">
-  <div class="lb-bar">
-    <div class="lb-caption" id="lbcaption"></div>
-    <div class="lb-controls">
-      <a id="lbread" href="#" target="_blank" rel="noopener">Read on Substack &#8599;&#xFE0E;</a>
-      <button type="button" id="lbprev" aria-label="Previous article">&#8592; Prev</button>
-      <button type="button" id="lbnext" aria-label="Next article">Next &#8594;</button>
-      <button type="button" id="lbclose" aria-label="Close viewer">&#10005;</button>
-    </div>
-  </div>
-  <div class="lb-stage">
-    <img id="lbimg" src="" alt="">
-    <button class="lb-zone prev" id="lbzoneprev" aria-label="Previous article"></button>
-    <button class="lb-zone next" id="lbzonenext" aria-label="Next article"></button>
-  </div>
-</div>
 
 <script src="vendor/swiper-bundle.min.js"></script>
 <script src="vendor/gsap.min.js"></script>
@@ -1261,10 +1245,13 @@
   var originalCards = Array.prototype.slice.call(evidenceTrack.children);
   originalCards.forEach(function (card) { evidenceTrack.appendChild(card.cloneNode(true)); });
 
-  var marqueeTween = gsap.to(evidenceTrack, { xPercent: -50, duration: 34, ease: 'none', repeat: -1 });
+  /* half speed (Marc); shift by the exact repeat period (originals + one gap)
+     so the loop wraps with no visible jump; no pause-on-hover — a tap on touch
+     devices fired mouseenter and froze the strip permanently */
+  var marqueeGap = parseFloat(getComputedStyle(evidenceTrack).columnGap) || 0;
+  var marqueePeriod = (evidenceTrack.scrollWidth + marqueeGap) / 2;
+  var marqueeTween = gsap.to(evidenceTrack, { x: -marqueePeriod, duration: 68, ease: 'none', repeat: -1 });
   if (reduceMotion) marqueeTween.pause();
-  evidenceRail.addEventListener('mouseenter', function () { marqueeTween.pause(); });
-  evidenceRail.addEventListener('mouseleave', function () { if (!reduceMotion) marqueeTween.play(); });
 
   ScrollTrigger.create({
     trigger: '#techwars',
@@ -1277,17 +1264,27 @@
     }
   });
 
+  /* clicks go straight to the article on Substack (Marc) — via a real anchor
+     click, not window.open: window.open spawns an empty about:blank tab first,
+     which stays behind when the phone hands the link to the Substack app */
+  function openArticle(it) {
+    var a = document.createElement('a');
+    a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
   document.addEventListener('click', function (e) {
     var card = e.target.closest('.ev-card');
     if (!card) return;
-    openLightbox(parseInt(card.getAttribute('data-work'), 10));
+    var it = articles[parseInt(card.getAttribute('data-work'), 10)];
+    if (it) openArticle(it);
   });
   kineticStage.addEventListener('click', function (e) {
     var row = e.target.closest('.kw-row');
     if (!row) return;
-    var idx = parseInt(row.getAttribute('data-idx'), 10);
-    if (isNaN(idx)) return; // name row is not an article link
-    openLightbox(idx);
+    var it = articles[parseInt(row.getAttribute('data-idx'), 10)];
+    if (it) openArticle(it);
   });
 
   /* =========================================================
@@ -1350,7 +1347,7 @@
     });
   });
 
-  /* ---------- article-preview lightbox ---------- */
+  /* ---------- article links (clicks open Substack directly) ---------- */
   var articles = [
     { src: 'img/lucas-hero.jpeg', title: 'How LUCAS Delivered Epic Fury', date: '2 March 2026', url: 'https://techwars.substack.com/p/how-lucas-delivered-epic-fury' },
     { src: 'img/far-person-vision-hero.jpg', title: 'Far-Person Vision: The Future of Strike?', date: '19 May 2026', url: 'https://techwars.substack.com/p/far-person-vision-the-future-of-strike' },
@@ -1359,55 +1356,6 @@
     { src: 'img/30-questions.jpg', title: 'The 30 Most Dangerous Questions for CUAS Startups', date: '28 February 2026', url: 'https://techwars.substack.com/p/the-30-most-dangerous-questions-for' },
     { src: 'img/drone-dominance.jpeg', title: 'Drone Dominance: Gauntlet Phase I', date: '11 February 2026', url: 'https://techwars.substack.com/p/drone-dominance-gauntlet-phase-i' }
   ];
-  var lb = document.getElementById('lightbox');
-  var lbimg = document.getElementById('lbimg');
-  var lbcaption = document.getElementById('lbcaption');
-  var lbread = document.getElementById('lbread');
-  var lbIndex = 0;
-  var lbOpen = false;
-
-  function lbShow(i, instant) {
-    lbIndex = (i + articles.length) % articles.length;
-    var it = articles[lbIndex];
-    lbread.href = it.url;
-    if (instant) {
-      lbimg.src = it.src; lbimg.alt = it.title;
-      lbcaption.innerHTML = '<b>' + it.title + '</b><span>TECH WARS &middot; ' + it.date + '</span>';
-      return;
-    }
-    lbimg.classList.add('swap');
-    setTimeout(function () {
-      lbimg.src = it.src; lbimg.alt = it.title;
-      lbcaption.innerHTML = '<b>' + it.title + '</b><span>TECH WARS &middot; ' + it.date + '</span>';
-      lbimg.onload = function () { lbimg.classList.remove('swap'); };
-    }, 180);
-  }
-  var lbSavedY = 0;
-  window.openLightbox = function (i) {
-    lbShow(i, true);
-    lbOpen = true;
-    lbSavedY = window.scrollY;
-    document.body.style.top = -lbSavedY + 'px';
-    document.body.classList.add('lb-open');
-  };
-  function closeLightbox() {
-    lbOpen = false;
-    document.body.classList.remove('lb-open');
-    document.body.style.top = '';
-    window.scrollTo(0, lbSavedY);
-  }
-  document.getElementById('lbclose').addEventListener('click', closeLightbox);
-  document.getElementById('lbprev').addEventListener('click', function () { lbShow(lbIndex - 1); });
-  document.getElementById('lbnext').addEventListener('click', function () { lbShow(lbIndex + 1); });
-  document.getElementById('lbzoneprev').addEventListener('click', function () { lbShow(lbIndex - 1); });
-  document.getElementById('lbzonenext').addEventListener('click', function () { lbShow(lbIndex + 1); });
-  document.addEventListener('keydown', function (e) {
-    if (!lbOpen) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') lbShow(lbIndex - 1);
-    if (e.key === 'ArrowRight') lbShow(lbIndex + 1);
-  });
-
   ScrollTrigger.refresh();
 })();
 </script>

@@ -1264,18 +1264,27 @@
     }
   });
 
-  /* clicks go straight to the article on Substack (Marc) — no image preview */
+  /* clicks go straight to the article on Substack (Marc) — via a real anchor
+     click, not window.open: window.open spawns an empty about:blank tab first,
+     which stays behind when the phone hands the link to the Substack app */
+  function openArticle(it) {
+    var a = document.createElement('a');
+    a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
   document.addEventListener('click', function (e) {
     var card = e.target.closest('.ev-card');
     if (!card) return;
     var it = articles[parseInt(card.getAttribute('data-work'), 10)];
-    if (it) window.open(it.url, '_blank', 'noopener');
+    if (it) openArticle(it);
   });
   kineticStage.addEventListener('click', function (e) {
     var row = e.target.closest('.kw-row');
     if (!row) return;
     var it = articles[parseInt(row.getAttribute('data-idx'), 10)];
-    if (it) window.open(it.url, '_blank', 'noopener');
+    if (it) openArticle(it);
   });
 
   /* =========================================================

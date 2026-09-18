@@ -289,10 +289,24 @@
   .tw-homepage-shot{flex:1 1 320px;max-width:440px;margin:0}
   .tw-homepage-shot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:2px}
   .tw-homepage-shot figcaption{margin-top:9px;font-size:12.5px;color:var(--faint)}
-  @media (max-width:760px){.tw-intro{flex-direction:column;align-items:stretch}.tw-homepage-shot{max-width:none}}
+  /* phone: the shared flex:1 1 Npx basis (tuned for the desktop side-by-side row) forced
+     both columns to their desktop WIDTH value as a HEIGHT once the row becomes a column,
+     padding the section with dead space; reset the basis and shrink the screenshot itself
+     so the section fits under ~1.3 screens instead of 1.7 (Marc's UX pass, 18.09.2026) */
+  @media (max-width:760px){
+    .tw-intro{flex-direction:column;flex-wrap:nowrap;align-items:stretch}
+    .tw-intro-text{flex:0 1 auto}
+    .tw-intro-text p{margin-bottom:12px !important}
+    .tw-homepage-shot{flex:0 0 auto;width:90px;max-width:90px;margin:0 auto;align-self:center}
+    .tw-homepage-shot img{aspect-ratio:16/9;object-fit:cover;object-position:top}
+    .tw-homepage-shot figcaption{margin-top:4px}
+    #techwars{padding:24px 0}
+    #techwars .tw-carousel-wrap{margin-top:18px}
+    #techwars .tw-hint{margin-top:12px}
+  }
 
   .tw-carousel-wrap{position:relative;margin-top:clamp(28px,4vw,44px)}
-  .tw-swiper{overflow:hidden;padding-bottom:2.6rem}
+  .tw-swiper{overflow:hidden;padding-bottom:3.25rem}
   .tw-swiper .swiper-slide{height:auto}
   .tw-card{border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--bg);height:100%;display:flex;flex-direction:column;cursor:default}
   .tw-cover{display:block;position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg-soft)}
@@ -300,20 +314,27 @@
   .tw-card:hover .tw-cover img{transform:scale(1.045)}
   .tw-body{padding:1.1rem 1.2rem 1.3rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
   .tw-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
-  .tw-label{font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .tw-label{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
   .tw-label.briefing{color:var(--ink)}
-  .tw-date{font-size:.75rem;color:var(--faint);white-space:nowrap}
+  .tw-date{font-size:13px;color:var(--faint);white-space:nowrap}
   .tw-title{font-size:.95rem;font-weight:600;line-height:1.4;margin:0}
   .tw-subtitle{font-size:.86rem;color:var(--mut);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .tw-link{font-size:.78rem;color:var(--mut);border-bottom:1px solid var(--line);width:fit-content}
+  .tw-link{font-size:13px;color:var(--mut);border-bottom:1px solid var(--line);width:fit-content}
   .tw-link:hover{border-color:var(--ink);color:var(--ink)}
-  .swiper-button-next.tw-next,.swiper-button-prev.tw-prev{color:var(--ink);top:auto;bottom:0;width:2rem;height:1.6rem}
+  /* arrows: 44x44 hit area (was 32x26); icon glyph stays the same visual size via the
+     :after font-size, the box just grows around it (Marc's tap-target pass, 18.09.2026) */
+  .swiper-button-next.tw-next,.swiper-button-prev.tw-prev{color:var(--ink);top:auto;bottom:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
   .swiper-button-next.tw-next:after,.swiper-button-prev.tw-prev:after{font-size:.85rem}
-  .swiper-button-prev.tw-prev{left:auto;right:3.2rem}
+  .swiper-button-prev.tw-prev{left:auto;right:56px}
   .swiper-button-next.tw-next{right:0}
   .swiper-pagination.tw-pagination{bottom:0 !important;left:0 !important;width:auto !important;text-align:left !important;z-index:6;pointer-events:all}
-  .swiper-pagination.tw-pagination .swiper-pagination-bullet{background:var(--faint);width:10px;height:10px;margin:0 6px !important;position:relative;z-index:6}
-  .swiper-pagination.tw-pagination .swiper-pagination-bullet-active{background:var(--ink)}
+  /* bullets: 24x24 hit area via padding, visual dot stays small via ::before so 17 of
+     them still read as a compact row on desktop; phone switches to a fraction counter
+     below instead, since 17 bullets at a real tap size cannot fit 358px (Marc, 18.09.2026) */
+  .swiper-pagination.tw-pagination .swiper-pagination-bullet{background:transparent;width:24px;height:24px;margin:0 !important;position:relative;z-index:6;display:inline-flex;align-items:center;justify-content:center}
+  .swiper-pagination.tw-pagination .swiper-pagination-bullet:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--faint)}
+  .swiper-pagination.tw-pagination .swiper-pagination-bullet-active:before{background:var(--ink)}
+  .swiper-pagination.tw-pagination .swiper-pagination-current,.swiper-pagination.tw-pagination .swiper-pagination-total{font-size:13px;color:var(--faint)}
   .tw-hint{margin-top:clamp(20px,3vw,32px);font-size:12.5px;color:var(--faint);letter-spacing:.02em}
 
   /* ---------- lightbox ---------- */
@@ -706,7 +727,7 @@
         <div class="swiper-pagination tw-pagination"></div>
       </div>
     </div>
-    <p class="wrap tw-hint">Newest first. Only the latest weekly Briefing is shown here — the full archive of Briefings and deep dives is at techwars.substack.com.</p>
+    <p class="wrap tw-hint">Newest first. Only the latest weekly Briefing is shown here. The full archive of Briefings and deep dives is at techwars.substack.com.</p>
   </section>
 
   <!-- Advisory -->
@@ -1359,12 +1380,15 @@
     touchStartPreventDefault: false,
     speed: reduceMotion ? 0 : 450,
     breakpoints: {
-      680: { slidesPerView: 1.5 },
-      980: { slidesPerView: 2.15 },
-      1280: { slidesPerView: 3 }
+      680: { slidesPerView: 1.5, pagination: { el: '.tw-pagination', clickable: true, type: 'bullets' } },
+      980: { slidesPerView: 2.15, pagination: { el: '.tw-pagination', clickable: true, type: 'bullets' } },
+      1280: { slidesPerView: 3, pagination: { el: '.tw-pagination', clickable: true, type: 'bullets' } }
     },
     navigation: { nextEl: '.tw-next', prevEl: '.tw-prev' },
-    pagination: { el: '.tw-pagination', clickable: true },
+    /* phone (below the 680 breakpoint above): 17 dots cannot be real 24px tap targets in
+       358px, so phone gets a "3 / 17" fraction counter instead; tablet/desktop keep the
+       dots (Marc's tap-target pass, 18.09.2026) */
+    pagination: { el: '.tw-pagination', clickable: true, type: 'fraction' },
     keyboard: { enabled: true, onlyInViewport: true }
     /* no autoplay (Marc 18.09.2026): the old marquee's sin was taking control
        away from the visitor; a timer that hands it back after N seconds is

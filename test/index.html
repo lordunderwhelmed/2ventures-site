@@ -283,16 +283,38 @@
   .kinetic-head{font-size:clamp(30px,4.6vw,56px) !important;font-weight:800 !important;letter-spacing:-.025em !important;line-height:1.05 !important;max-width:none !important;padding-right:.08em;clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.16,1,.3,1)}
   .reveal.in .kinetic-head,.kinetic-head.reveal.in{clip-path:inset(-4% -4% -4% -4%)}
 
-  /* ---------- evidence gallery: laterally drifting filmstrip (replaces the archive grid) ---------- */
-  .evidence-rail{overflow:hidden;padding:clamp(28px,4vw,44px) 0 8px;will-change:transform}
-  .evidence-track{display:flex;gap:clamp(16px,2.5vw,32px);width:max-content}
-  .ev-card{flex:0 0 clamp(230px,27vw,360px);cursor:pointer}
-  .ev-card .img-wrap{overflow:hidden;background:var(--bg-soft)}
-  .ev-card img{transition:transform .5s cubic-bezier(.25,.46,.45,.94),opacity .3s ease}
-  .ev-card:hover img{opacity:.92;transform:scale(1.045)}
-  .ev-card figcaption{margin-top:9px;font-size:12.5px;color:var(--ink);display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
-  .ev-card figcaption span{color:var(--faint)}
-  .ev-hint{margin-top:clamp(20px,3vw,32px);font-size:12.5px;color:var(--faint);letter-spacing:.02em}
+  /* ---------- TECH WARS: hero carousel, visitor-controlled (replaces the auto-drifting filmstrip, Marc 18.09.2026) ---------- */
+  .tw-intro{display:flex;gap:clamp(24px,4vw,56px);align-items:flex-end;flex-wrap:wrap}
+  .tw-intro-text{flex:1 1 360px;min-width:0;max-width:70ch}
+  .tw-homepage-shot{flex:1 1 320px;max-width:440px;margin:0}
+  .tw-homepage-shot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:2px}
+  .tw-homepage-shot figcaption{margin-top:9px;font-size:12.5px;color:var(--faint)}
+  @media (max-width:760px){.tw-intro{flex-direction:column;align-items:stretch}.tw-homepage-shot{max-width:none}}
+
+  .tw-carousel-wrap{position:relative;margin-top:clamp(28px,4vw,44px)}
+  .tw-swiper{overflow:hidden;padding-bottom:2.6rem}
+  .tw-swiper .swiper-slide{height:auto}
+  .tw-card{border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--bg);height:100%;display:flex;flex-direction:column;cursor:default}
+  .tw-cover{display:block;position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg-soft)}
+  .tw-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
+  .tw-card:hover .tw-cover img{transform:scale(1.045)}
+  .tw-body{padding:1.1rem 1.2rem 1.3rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+  .tw-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .tw-label{font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .tw-label.briefing{color:var(--ink)}
+  .tw-date{font-size:.75rem;color:var(--faint);white-space:nowrap}
+  .tw-title{font-size:.95rem;font-weight:600;line-height:1.4;margin:0}
+  .tw-subtitle{font-size:.86rem;color:var(--mut);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .tw-link{font-size:.78rem;color:var(--mut);border-bottom:1px solid var(--line);width:fit-content}
+  .tw-link:hover{border-color:var(--ink);color:var(--ink)}
+  .swiper-button-next.tw-next,.swiper-button-prev.tw-prev{color:var(--ink);top:auto;bottom:0;width:2rem;height:1.6rem}
+  .swiper-button-next.tw-next:after,.swiper-button-prev.tw-prev:after{font-size:.85rem}
+  .swiper-button-prev.tw-prev{left:auto;right:3.2rem}
+  .swiper-button-next.tw-next{right:0}
+  .swiper-pagination.tw-pagination{bottom:0 !important;left:0 !important;width:auto !important;text-align:left !important;z-index:6;pointer-events:all}
+  .swiper-pagination.tw-pagination .swiper-pagination-bullet{background:var(--faint);width:10px;height:10px;margin:0 6px !important;position:relative;z-index:6}
+  .swiper-pagination.tw-pagination .swiper-pagination-bullet-active{background:var(--ink)}
+  .tw-hint{margin-top:clamp(20px,3vw,32px);font-size:12.5px;color:var(--faint);letter-spacing:.02em}
 
   /* ---------- lightbox ---------- */
   .lightbox{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateX(6%);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s}
@@ -445,6 +467,8 @@
     .reveal{opacity:1;transform:none;transition:none}
     .intro-hint,.scroll-hint svg{animation:none}
     .kinetic-head{clip-path:inset(-4% -4% -4% -4%) !important}
+    .tw-cover img{transition:none}
+    .tw-card:hover .tw-cover img{transform:none}
   }
 </style>
 </head>
@@ -651,52 +675,38 @@
     </div>
   </section>
 
-  <!-- TECH WARS: laterally drifting evidence gallery (replaces the static archive grid) -->
+  <!-- TECH WARS: visitor-controlled hero carousel (replaces the auto-drifting filmstrip, Marc 18.09.2026) -->
   <section class="sec" id="techwars">
     <div class="wrap">
       <div class="sec-label reveal">Writing</div>
       <div class="sec-head kinetic-head reveal">TECH WARS.</div>
-      <div class="reveal" style="max-width:70ch">
-        <p style="font-size:clamp(15px,1.5vw,16.5px);line-height:1.72;margin-bottom:26px">
-          Deep-dive analysis of drone warfare, defense procurement, and the economics of modern
-          conflict, written for and read by the people making decisions: defense investors, MoD
-          procurement officials, industry and startup executives, and allied military staff.
-          Every issue is 5,000 to 15,000+ words of original analysis built from primary sources,
-          OSINT, and direct access, written by a practitioner who's worked with all of the
-          above-mentioned groups on real solutions in the field.
-        </p>
-        <a href="https://techwars.substack.com" target="_blank" rel="noopener" class="press-link" style="font-size:.85rem">techwars.substack.com &#8599;&#xFE0E;</a>
-      </div>
-    </div>
-    <div class="evidence-rail" id="evidenceRail">
-      <div class="evidence-track" id="evidenceTrack">
-        <figure class="ev-card" data-work="0">
-          <div class="img-wrap"><img src="img/lucas-hero.jpeg" alt="How LUCAS Delivered Epic Fury · TECH WARS article cover"></div>
-          <figcaption>How LUCAS Delivered Epic Fury <span>· 2 March 2026</span></figcaption>
-        </figure>
-        <figure class="ev-card" data-work="1">
-          <div class="img-wrap"><img src="img/far-person-vision-hero.jpg" alt="Far-Person Vision: The Future of Strike? · TECH WARS article cover"></div>
-          <figcaption>Far-Person Vision: The Future of Strike? <span>· 19 May 2026</span></figcaption>
-        </figure>
-        <figure class="ev-card" data-work="2">
-          <div class="img-wrap"><img src="img/waterworld.jpg" alt="Waterworld: How Drones Will Reshape Shipping · TECH WARS article cover"></div>
-          <figcaption>Waterworld: How Drones Will Reshape Shipping <span>· 11 May 2026</span></figcaption>
-        </figure>
-        <figure class="ev-card" data-work="3">
-          <div class="img-wrap"><img src="img/capability-factories.jpg" alt="Capability Factories: How to Procure · TECH WARS article cover"></div>
-          <figcaption>Capability Factories: How to Procure <span>· 20 April 2026</span></figcaption>
-        </figure>
-        <figure class="ev-card" data-work="4">
-          <div class="img-wrap"><img src="img/30-questions.jpg" alt="The 30 Most Dangerous Questions for CUAS Startups · TECH WARS article cover"></div>
-          <figcaption>The 30 Most Dangerous Questions for CUAS Startups <span>· 28 February 2026</span></figcaption>
-        </figure>
-        <figure class="ev-card" data-work="5">
-          <div class="img-wrap"><img src="img/drone-dominance.jpeg" alt="Drone Dominance: Gauntlet Phase I · TECH WARS article cover"></div>
-          <figcaption>Drone Dominance: Gauntlet Phase I <span>· 11 February 2026</span></figcaption>
+      <div class="reveal tw-intro">
+        <div class="tw-intro-text">
+          <p style="font-size:clamp(15px,1.5vw,16.5px);line-height:1.72;margin-bottom:26px">
+            Deep-dive analysis of drone warfare, defense procurement, and the economics of modern
+            conflict, written for and read by the people making decisions: defense investors, MoD
+            procurement officials, industry and startup executives, and allied military staff.
+            Every issue is 5,000 to 15,000+ words of original analysis built from primary sources,
+            OSINT, and direct access, written by a practitioner who's worked with all of the
+            above-mentioned groups on real solutions in the field.
+          </p>
+          <a href="https://techwars.substack.com" target="_blank" rel="noopener" class="press-link" style="font-size:.85rem">techwars.substack.com &#8599;&#xFE0E;</a>
+        </div>
+        <figure class="tw-homepage-shot">
+          <img src="img/techwars/homepage-screenshot.jpg" width="1440" height="760" loading="lazy" decoding="async" alt="TECH WARS homepage on Substack">
+          <figcaption>techwars.substack.com</figcaption>
         </figure>
       </div>
     </div>
-    <p class="wrap ev-hint">The strip drifts on its own. Tap or click any frame to read.</p>
+    <div class="wrap tw-carousel-wrap">
+      <div class="swiper tw-swiper" id="techwarsSwiper">
+        <div class="swiper-wrapper" id="techwarsWrapper"></div>
+        <div class="swiper-button-prev tw-prev"></div>
+        <div class="swiper-button-next tw-next"></div>
+        <div class="swiper-pagination tw-pagination"></div>
+      </div>
+    </div>
+    <p class="wrap tw-hint">Newest first. Only the latest weekly Briefing is shown here — the full archive of Briefings and deep dives is at techwars.substack.com.</p>
   </section>
 
   <!-- Advisory -->
@@ -1259,38 +1269,113 @@
   });
 
   /* =========================================================
-     5) Evidence gallery: laterally drifting filmstrip.
-        Continuous self-driven drift (paused on hover) plus a
-        scroll-scrubbed parallax offset on the outer wrapper —
-        keeps the haptic scrub feel even outside the pinned rail.
+     5) TECH WARS: hero carousel, visitor-controlled (Swiper,
+        same setup as #pressSwiper below). Cards are built from
+        techwarsCards — edit that array to add/remove articles,
+        see docs/website-2ventures.md "adding a TECH WARS article".
+        Newest first; one Briefing shown (the latest); no autoplay
+        — Marc's complaint was losing manual control to the old
+        marquee, so nothing here takes it back, ever (18.09.2026).
      ========================================================= */
-  var evidenceRail = document.getElementById('evidenceRail');
-  var evidenceTrack = document.getElementById('evidenceTrack');
-  var originalCards = Array.prototype.slice.call(evidenceTrack.children);
-  originalCards.forEach(function (card) { evidenceTrack.appendChild(card.cloneNode(true)); });
+  var techwarsCards = [
+    { slug: "why-how", title: "Why: How?", subtitle: "Welcome to the twenty-first hour.", date: "17 September 2026", url: "https://techwars.substack.com/p/why-how", kind: "deepdive", w: 720, h: 960 },
+    { slug: "access-the-briefing-week-of-september-14", title: "🗝️ Access — The Briefing — Week of September 14th", subtitle: "Drones On a Plane, 100 Years, Surface-LD, Ship-on-Ship", date: "15 September 2026", url: "https://techwars.substack.com/p/access-the-briefing-week-of-september", kind: "briefing", w: 960, h: 540 },
+    { slug: "spiderweb-20-how-russia-struck-the-sbu", title: "Spiderweb 2.0? How Russia Struck the SBU", subtitle: "The Russian strike on the SBU HQ reveals a dangerous convergence of technological innovations, which are at the cusp of scalability, with potentially dire implications for Ukraine and NATO.", date: "11 September 2026", url: "https://techwars.substack.com/p/spiderweb-20-how-russia-struck-the", kind: "deepdive", w: 960, h: 603 },
+    { slug: "kriegsziel-600-grams-of-semtex-and-artic", title: "Kriegsziel: 600 Grams of Semtex and Article 80a", subtitle: "What the recent Leipzig communication by the German and Russian government and related attacks tell us about where the escalation is headed, and how. And what role drones play in all of this.", date: "2 September 2026", url: "https://techwars.substack.com/p/kriegsziel-600-grams-of-semtex-and", kind: "deepdive", w: 960, h: 536 },
+    { slug: "tech-war-shorts-the-opponents-components", title: "TECH WAR Shorts: The Opponents' Components 🇨🇳", subtitle: "The West has outsourced anything from chip production to the peeling of shrimps to the Far East for decades instead of modernizing its industry. Now its dependency runs so deep, it has to accept...", date: "13 August 2026", url: "https://techwars.substack.com/p/tech-war-shorts-the-opponents-components", kind: "deepdive", w: 846, h: 960 },
+    { slug: "shifty-fades-of-grey-drones-in-wind-stor", title: "Shifty Fades of Grey: Drones in Wind, Storm, and Rain", subtitle: "What flies, when it flies, and why to never trust the sales pitch. Part Two of the Extreme Environments Series: FPVs, Small UAS and Interceptor Drones in Wind, Rain, and Thunderstorms.", date: "14 July 2026", url: "https://techwars.substack.com/p/shifty-fades-of-grey-drones-in-wind", kind: "deepdive", w: 960, h: 536 },
+    { slug: "how-to-stop-a-swarm", title: "How to Stop a Swarm", subtitle: "The Dronewall Part 3: the definitive guide to swarm counter-drone defense in mid-2026.", date: "5 July 2026", url: "https://techwars.substack.com/p/how-to-stop-a-swarm", kind: "deepdive", w: 960, h: 536 },
+    { slug: "pressure-on-the-tank", title: "Pressure on the Tank?", subtitle: "Can the tank’s relevance be saved amid drone warfare, and can the tank keep up with drone innovation cycles? An important update.", date: "21 June 2026", url: "https://techwars.substack.com/p/pressure-on-the-tank", kind: "deepdive", w: 960, h: 536 },
+    { slug: "nobody-needs-starship", title: "Nobody Needs Starship*", subtitle: "Who needs super-heavy reusable lift, not as a vision, but as a line item on a program of record? Following the money of the largest IPO on record and analyzing demand for the world's largest launch.", date: "12 June 2026", url: "https://techwars.substack.com/p/nobody-needs-starship", kind: "deepdive", w: 960, h: 535 },
+    { slug: "the-three-developments-pushing-autonomy", title: "The Three Developments Pushing Autonomy in UAVs | Part 1: Deep Pressure on Interceptor Designs", subtitle: "How the measure-countermeasure cycle in deep strike is shaping AI and autonomy.", date: "8 June 2026", url: "https://techwars.substack.com/p/the-three-developments-pushing-autonomy", kind: "deepdive", w: 960, h: 957 },
+    { slug: "ukraines-long-arm-how-kyiv-overtook-mosc", title: "Ukraine’s Long Arm: How Kyiv Overtook Moscow in the Deep-Strike War", subtitle: "Ukraine went from zero long-range strike capacity in February 2022 to outpacing Russia in deep strikes per day by March 2026. This is how that happened, and all else you need to know. Free Deep Dive!", date: "24 May 2026", url: "https://techwars.substack.com/p/ukraines-long-arm-how-kyiv-overtook", kind: "deepdive", w: 540, h: 960 },
+    { slug: "far-person-vision-the-future-of-strike", title: "Far-Person Vision: The Future of Strike?", subtitle: "How breakthroughs in remote FPV operations are paving the way towards full autonomy.", date: "19 May 2026", url: "https://techwars.substack.com/p/far-person-vision-the-future-of-strike", kind: "deepdive", w: 960, h: 536 },
+    { slug: "waterworld-how-drones-will-reshape-shipp", title: "Waterworld: How Drones Will Reshape Shipping (part one)", subtitle: "The threat posed by unmanned systems, and a glimpse of the future of unmanned systems against commercial shipping.", date: "11 May 2026", url: "https://techwars.substack.com/p/waterworld-how-drones-will-reshape", kind: "deepdive", w: 960, h: 523 },
+    { slug: "capability-factories-how-to-procure", title: "Capability Factories: How to Procure", subtitle: "A plausible path out of the procurement crisis.", date: "20 April 2026", url: "https://techwars.substack.com/p/capability-factories-how-to-test", kind: "deepdive", w: 960, h: 536 },
+    { slug: "how-lucas-delivered-epic-fury", title: "How LUCAS Delivered Epic Fury", subtitle: "The Mechanics Behind the Making of US Affordable Strike.", date: "2 March 2026", url: "https://techwars.substack.com/p/how-lucas-delivered-epic-fury", kind: "deepdive", w: 960, h: 640 },
+    { slug: "the-30-most-dangerous-questions-for-cuas", title: "The 30 Most Dangerous Questions for CUAS Startups", subtitle: "No Easy Questions: Kinetic Interceptor Drones", date: "28 February 2026", url: "https://techwars.substack.com/p/the-30-most-dangerous-questions-for", kind: "deepdive", w: 960, h: 469 },
+    { slug: "drone-dominance-gauntlet-phase-i-essenti", title: "Drone Dominance: Gauntlet Phase I: Essential Field Notes", subtitle: "What can we learn from the first stage of the world's largest drone buying program?", date: "11 February 2026", url: "https://techwars.substack.com/p/drone-dominance-gauntlet-phase-i", kind: "deepdive", w: 960, h: 515 }
+  ];
 
-  /* half speed (Marc); shift by the exact repeat period (originals + one gap)
-     so the loop wraps with no visible jump; no pause-on-hover — a tap on touch
-     devices fired mouseenter and froze the strip permanently */
-  var marqueeGap = parseFloat(getComputedStyle(evidenceTrack).columnGap) || 0;
-  var marqueePeriod = (evidenceTrack.scrollWidth + marqueeGap) / 2;
-  var marqueeTween = gsap.to(evidenceTrack, { x: -marqueePeriod, duration: 68, ease: 'none', repeat: -1 });
-  if (reduceMotion) marqueeTween.pause();
+  var techwarsWrapper = document.getElementById('techwarsWrapper');
+  techwarsCards.forEach(function (a, i) {
+    var slide = document.createElement('div');
+    slide.className = 'swiper-slide';
 
-  ScrollTrigger.create({
-    trigger: '#techwars',
-    start: 'top bottom',
-    end: 'bottom top',
-    scrub: true,
-    onUpdate: function (self) {
-      var offset = (self.progress - 0.5) * 90;
-      evidenceRail.style.transform = 'translateX(' + offset + 'px)';
-    }
+    var art = document.createElement('article');
+    art.className = 'tw-card';
+
+    var cover = document.createElement('a');
+    cover.className = 'tw-cover';
+    cover.href = a.url; cover.target = '_blank'; cover.rel = 'noopener';
+    cover.setAttribute('aria-label', 'Read: ' + a.title);
+    var img = document.createElement('img');
+    img.src = 'img/techwars/' + a.slug + '.jpg';
+    img.width = a.w; img.height = a.h;
+    img.alt = a.title + ' · TECH WARS cover';
+    img.decoding = 'async';
+    if (i === 0) { img.loading = 'eager'; img.setAttribute('fetchpriority', 'high'); }
+    else { img.loading = 'lazy'; }
+    cover.appendChild(img);
+
+    var body = document.createElement('div');
+    body.className = 'tw-body';
+
+    var row = document.createElement('div');
+    row.className = 'tw-row';
+    var label = document.createElement('span');
+    label.className = 'tw-label' + (a.kind === 'briefing' ? ' briefing' : '');
+    label.textContent = a.kind === 'briefing' ? 'Briefing' : 'Deep dive';
+    var date = document.createElement('span');
+    date.className = 'tw-date';
+    date.textContent = a.date;
+    row.appendChild(label); row.appendChild(date);
+
+    var title = document.createElement('p');
+    title.className = 'tw-title';
+    title.textContent = a.title;
+
+    var sub = document.createElement('p');
+    sub.className = 'tw-subtitle';
+    sub.textContent = a.subtitle;
+
+    var link = document.createElement('a');
+    link.className = 'tw-link';
+    link.href = a.url; link.target = '_blank'; link.rel = 'noopener';
+    link.textContent = 'Read ↗︎';
+
+    body.appendChild(row); body.appendChild(title); body.appendChild(sub); body.appendChild(link);
+    art.appendChild(cover); art.appendChild(body);
+    slide.appendChild(art);
+    techwarsWrapper.appendChild(slide);
+  });
+
+  new Swiper('#techwarsSwiper', {
+    observer: true,
+    observeParents: true,
+    slidesPerView: 1,
+    spaceBetween: 18,
+    grabCursor: true,
+    touchStartPreventDefault: false,
+    speed: reduceMotion ? 0 : 450,
+    breakpoints: {
+      680: { slidesPerView: 1.5 },
+      980: { slidesPerView: 2.15 },
+      1280: { slidesPerView: 3 }
+    },
+    navigation: { nextEl: '.tw-next', prevEl: '.tw-prev' },
+    pagination: { el: '.tw-pagination', clickable: true },
+    keyboard: { enabled: true, onlyInViewport: true }
+    /* no autoplay (Marc 18.09.2026): the old marquee's sin was taking control
+       away from the visitor; a timer that hands it back after N seconds is
+       the same sin on a delay, so this carousel only moves on visitor input */
   });
 
   /* clicks go straight to the article on Substack (Marc) — via a real anchor
      click, not window.open: window.open spawns an empty about:blank tab first,
-     which stays behind when the phone hands the link to the Substack app */
+     which stays behind when the phone hands the link to the Substack app.
+     (TECH WARS carousel cards above are real <a> elements already and need
+     no click delegation; this is still used by the kinetic-word stage.) */
   function openArticle(it) {
     var a = document.createElement('a');
     a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
@@ -1298,12 +1383,6 @@
     a.click();
     a.remove();
   }
-  document.addEventListener('click', function (e) {
-    var card = e.target.closest('.ev-card');
-    if (!card) return;
-    var it = articles[parseInt(card.getAttribute('data-work'), 10)];
-    if (it) openArticle(it);
-  });
   kineticStage.addEventListener('click', function (e) {
     var row = e.target.closest('.kw-row');
     if (!row) return;

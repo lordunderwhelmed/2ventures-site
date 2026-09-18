@@ -286,7 +286,7 @@
   /* ---------- TECH WARS: hero carousel, visitor-controlled (replaces the auto-drifting filmstrip, Marc 18.09.2026) ---------- */
   .tw-intro{display:flex;gap:clamp(24px,4vw,56px);align-items:flex-end;flex-wrap:wrap}
   .tw-intro-text{flex:1 1 360px;min-width:0;max-width:70ch}
-  .tw-homepage-shot{flex:1 1 320px;max-width:440px;margin:0}
+  .tw-homepage-shot{flex:1 1 100%;width:100%;max-width:none;margin:0}
   .tw-homepage-shot img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:2px}
   .tw-homepage-shot figcaption{margin-top:9px;font-size:12.5px;color:var(--faint)}
   /* phone: the shared flex:1 1 Npx basis (tuned for the desktop side-by-side row) forced
@@ -297,8 +297,8 @@
     .tw-intro{flex-direction:column;flex-wrap:nowrap;align-items:stretch}
     .tw-intro-text{flex:0 1 auto}
     .tw-intro-text p{margin-bottom:12px !important}
-    .tw-homepage-shot{flex:0 0 auto;width:90px;max-width:90px;margin:0 auto;align-self:center}
-    .tw-homepage-shot img{aspect-ratio:16/9;object-fit:cover;object-position:top}
+    .tw-homepage-shot{flex:0 0 auto;width:100%;max-width:none;margin:0}
+    .tw-homepage-shot img{aspect-ratio:auto}
     .tw-homepage-shot figcaption{margin-top:4px}
     #techwars{padding:24px 0}
     #techwars .tw-carousel-wrap{margin-top:18px}
@@ -714,7 +714,7 @@
           <a href="https://techwars.substack.com" target="_blank" rel="noopener" class="press-link" style="font-size:.85rem">techwars.substack.com &#8599;&#xFE0E;</a>
         </div>
         <figure class="tw-homepage-shot">
-          <img src="img/techwars/homepage-screenshot.jpg" width="1440" height="760" loading="lazy" decoding="async" alt="TECH WARS homepage on Substack">
+          <a href="https://techwars.substack.com" target="_blank" rel="noopener"><img src="img/techwars/homepage-screenshot.jpg" width="1568" height="1278" loading="lazy" decoding="async" alt="TECH WARS homepage on Substack"></a>
           <figcaption>techwars.substack.com</figcaption>
         </figure>
       </div>
@@ -727,7 +727,7 @@
         <div class="swiper-pagination tw-pagination"></div>
       </div>
     </div>
-    <p class="wrap tw-hint">Newest first. Only the latest weekly Briefing is shown here. The full archive of Briefings and deep dives is at techwars.substack.com.</p>
+    <p class="wrap tw-hint">Ten of the most popular deep dives. The full archive of deep dives and weekly Briefings is at techwars.substack.com.</p>
   </section>
 
   <!-- Advisory -->
@@ -1294,28 +1294,21 @@
         same setup as #pressSwiper below). Cards are built from
         techwarsCards — edit that array to add/remove articles,
         see docs/website-2ventures.md "adding a TECH WARS article".
-        Newest first; one Briefing shown (the latest); no autoplay
+        The ten most famous deep dives, most popular first (public likes, comments, restacks, 19.09.2026); no Briefings, never the latest post by default (Marc 19.09.2026); no autoplay
         — Marc's complaint was losing manual control to the old
         marquee, so nothing here takes it back, ever (18.09.2026).
      ========================================================= */
   var techwarsCards = [
-    { slug: "why-how", title: "Why: How?", subtitle: "Welcome to the twenty-first hour.", date: "17 September 2026", url: "https://techwars.substack.com/p/why-how", kind: "deepdive", w: 720, h: 960 },
-    { slug: "access-the-briefing-week-of-september-14", title: "🗝️ Access — The Briefing — Week of September 14th", subtitle: "Drones On a Plane, 100 Years, Surface-LD, Ship-on-Ship", date: "15 September 2026", url: "https://techwars.substack.com/p/access-the-briefing-week-of-september", kind: "briefing", w: 960, h: 540 },
-    { slug: "spiderweb-20-how-russia-struck-the-sbu", title: "Spiderweb 2.0? How Russia Struck the SBU", subtitle: "The Russian strike on the SBU HQ reveals a dangerous convergence of technological innovations, which are at the cusp of scalability, with potentially dire implications for Ukraine and NATO.", date: "11 September 2026", url: "https://techwars.substack.com/p/spiderweb-20-how-russia-struck-the", kind: "deepdive", w: 960, h: 603 },
-    { slug: "kriegsziel-600-grams-of-semtex-and-artic", title: "Kriegsziel: 600 Grams of Semtex and Article 80a", subtitle: "What the recent Leipzig communication by the German and Russian government and related attacks tell us about where the escalation is headed, and how. And what role drones play in all of this.", date: "2 September 2026", url: "https://techwars.substack.com/p/kriegsziel-600-grams-of-semtex-and", kind: "deepdive", w: 960, h: 536 },
-    { slug: "tech-war-shorts-the-opponents-components", title: "TECH WAR Shorts: The Opponents' Components 🇨🇳", subtitle: "The West has outsourced anything from chip production to the peeling of shrimps to the Far East for decades instead of modernizing its industry. Now its dependency runs so deep, it has to accept...", date: "13 August 2026", url: "https://techwars.substack.com/p/tech-war-shorts-the-opponents-components", kind: "deepdive", w: 846, h: 960 },
-    { slug: "shifty-fades-of-grey-drones-in-wind-stor", title: "Shifty Fades of Grey: Drones in Wind, Storm, and Rain", subtitle: "What flies, when it flies, and why to never trust the sales pitch. Part Two of the Extreme Environments Series: FPVs, Small UAS and Interceptor Drones in Wind, Rain, and Thunderstorms.", date: "14 July 2026", url: "https://techwars.substack.com/p/shifty-fades-of-grey-drones-in-wind", kind: "deepdive", w: 960, h: 536 },
-    { slug: "how-to-stop-a-swarm", title: "How to Stop a Swarm", subtitle: "The Dronewall Part 3: the definitive guide to swarm counter-drone defense in mid-2026.", date: "5 July 2026", url: "https://techwars.substack.com/p/how-to-stop-a-swarm", kind: "deepdive", w: 960, h: 536 },
+    { slug: "irans-survivable-second-drone-strike", title: "Iran's Survivable Second Drone Strike", subtitle: "Why 10.000 interceptor drones aren't much, what the US should have done instead, and why it's time for the EU to start panicking.", date: "15 March 2026", url: "https://techwars.substack.com/p/irans-survivable-second-drone-strike", kind: "deepdive", w: 960, h: 597 },
+    { slug: "ukraines-long-arm-how-kyiv-overtook-mosc", title: "Ukraine’s Long Arm: How Kyiv Overtook Moscow in the Deep-Strike War", subtitle: "Ukraine went from zero long-range strike capacity in February 2022 to outpacing Russia in deep strikes per day by March 2026. This is how that happened, and all else you need to know. Free Deep Dive!", date: "24 May 2026", url: "https://techwars.substack.com/p/ukraines-long-arm-how-kyiv-overtook", kind: "deepdive", w: 540, h: 960 },
     { slug: "pressure-on-the-tank", title: "Pressure on the Tank?", subtitle: "Can the tank’s relevance be saved amid drone warfare, and can the tank keep up with drone innovation cycles? An important update.", date: "21 June 2026", url: "https://techwars.substack.com/p/pressure-on-the-tank", kind: "deepdive", w: 960, h: 536 },
     { slug: "nobody-needs-starship", title: "Nobody Needs Starship*", subtitle: "Who needs super-heavy reusable lift, not as a vision, but as a line item on a program of record? Following the money of the largest IPO on record and analyzing demand for the world's largest launch.", date: "12 June 2026", url: "https://techwars.substack.com/p/nobody-needs-starship", kind: "deepdive", w: 960, h: 535 },
-    { slug: "the-three-developments-pushing-autonomy", title: "The Three Developments Pushing Autonomy in UAVs | Part 1: Deep Pressure on Interceptor Designs", subtitle: "How the measure-countermeasure cycle in deep strike is shaping AI and autonomy.", date: "8 June 2026", url: "https://techwars.substack.com/p/the-three-developments-pushing-autonomy", kind: "deepdive", w: 960, h: 957 },
-    { slug: "ukraines-long-arm-how-kyiv-overtook-mosc", title: "Ukraine’s Long Arm: How Kyiv Overtook Moscow in the Deep-Strike War", subtitle: "Ukraine went from zero long-range strike capacity in February 2022 to outpacing Russia in deep strikes per day by March 2026. This is how that happened, and all else you need to know. Free Deep Dive!", date: "24 May 2026", url: "https://techwars.substack.com/p/ukraines-long-arm-how-kyiv-overtook", kind: "deepdive", w: 540, h: 960 },
-    { slug: "far-person-vision-the-future-of-strike", title: "Far-Person Vision: The Future of Strike?", subtitle: "How breakthroughs in remote FPV operations are paving the way towards full autonomy.", date: "19 May 2026", url: "https://techwars.substack.com/p/far-person-vision-the-future-of-strike", kind: "deepdive", w: 960, h: 536 },
-    { slug: "waterworld-how-drones-will-reshape-shipp", title: "Waterworld: How Drones Will Reshape Shipping (part one)", subtitle: "The threat posed by unmanned systems, and a glimpse of the future of unmanned systems against commercial shipping.", date: "11 May 2026", url: "https://techwars.substack.com/p/waterworld-how-drones-will-reshape", kind: "deepdive", w: 960, h: 523 },
+    { slug: "how-to-stop-a-swarm", title: "How to Stop a Swarm", subtitle: "The Dronewall Part 3: the definitive guide to swarm counter-drone defense in mid-2026.", date: "5 July 2026", url: "https://techwars.substack.com/p/how-to-stop-a-swarm", kind: "deepdive", w: 960, h: 536 },
+    { slug: "missiles-for-the-rest-of-us-deep", title: "Missiles for the Rest of Us? Deep Strike Drones and Countermeasures Unpacked!", subtitle: "Part 1: Shahed-136 and 238 (Geran-2 and Geran-3) and countermeasures", date: "29 September 2025", url: "https://techwars.substack.com/p/missiles-for-the-rest-of-us-deep", kind: "deepdive", w: 960, h: 651 },
     { slug: "capability-factories-how-to-procure", title: "Capability Factories: How to Procure", subtitle: "A plausible path out of the procurement crisis.", date: "20 April 2026", url: "https://techwars.substack.com/p/capability-factories-how-to-test", kind: "deepdive", w: 960, h: 536 },
-    { slug: "how-lucas-delivered-epic-fury", title: "How LUCAS Delivered Epic Fury", subtitle: "The Mechanics Behind the Making of US Affordable Strike.", date: "2 March 2026", url: "https://techwars.substack.com/p/how-lucas-delivered-epic-fury", kind: "deepdive", w: 960, h: 640 },
-    { slug: "the-30-most-dangerous-questions-for-cuas", title: "The 30 Most Dangerous Questions for CUAS Startups", subtitle: "No Easy Questions: Kinetic Interceptor Drones", date: "28 February 2026", url: "https://techwars.substack.com/p/the-30-most-dangerous-questions-for", kind: "deepdive", w: 960, h: 469 },
-    { slug: "drone-dominance-gauntlet-phase-i-essenti", title: "Drone Dominance: Gauntlet Phase I: Essential Field Notes", subtitle: "What can we learn from the first stage of the world's largest drone buying program?", date: "11 February 2026", url: "https://techwars.substack.com/p/drone-dominance-gauntlet-phase-i", kind: "deepdive", w: 960, h: 515 }
+    { slug: "the-rise-of-russias-super-shaheds", title: "The Rise of Russia's Super-Shaheds - a Big Chance for All of Us?", subtitle: "Russian Shahed drones are becoming more sophisticated. Why this could actually turn out to be great news from a strategic perspective, and which key drivers defense executives need to acknowledge.", date: "2 August 2025", url: "https://techwars.substack.com/p/the-rise-of-russias-super-shaheds", kind: "deepdive", w: 960, h: 679 },
+    { slug: "far-person-vision-the-future-of-strike", title: "Far-Person Vision: The Future of Strike?", subtitle: "How breakthroughs in remote FPV operations are paving the way towards full autonomy.", date: "19 May 2026", url: "https://techwars.substack.com/p/far-person-vision-the-future-of-strike", kind: "deepdive", w: 960, h: 536 },
+    { slug: "germanys-rise-as-a-space-power", title: "Germany's Rise as a Space Power?", subtitle: "The Space Warfare Series, Part 1", date: "10 December 2025", url: "https://techwars.substack.com/p/germanys-rise-as-a-space-power", kind: "deepdive", w: 960, h: 720 }
   ];
 
   var techwarsWrapper = document.getElementById('techwarsWrapper');

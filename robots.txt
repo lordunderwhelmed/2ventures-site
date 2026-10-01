@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /test/
+
+Sitemap: https://2.ventures/sitemap.xml

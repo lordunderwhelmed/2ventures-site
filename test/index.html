@@ -91,12 +91,12 @@
   @media (max-width:960px) and (max-height:520px){
     .kw-frame{font-size:clamp(36px,9vw,110px)}
     .intro-caption{bottom:10px;gap:4px}
-    .intro-quote{font-size:11px;max-width:52ch;padding:0 12px}
-    .intro-tag{font-size:10px}
-    .intro-hint{font-size:9px}
+    .intro-quote{font-size:12px;max-width:52ch;padding:0 12px}
+    .intro-tag{font-size:12px}
+    .intro-hint{font-size:12px}
   }
   .intro-tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
-  .intro-hint{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;animation:hintpulse 1.8s ease-in-out infinite}
+  .intro-hint{font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;animation:hintpulse 1.8s ease-in-out infinite}
   /* iOS Safari: 100vh is the viewport WITHOUT the bottom toolbar, so the caption
      (name tag + Scroll hint) sat underneath the toolbar on first load and nothing
      told a phone reader to scroll. Lift the caption by exactly the toolbar's share
@@ -386,7 +386,7 @@
     background:repeating-linear-gradient(135deg,var(--bg-soft),var(--bg-soft) 10px,#f2f1ed 10px,#f2f1ed 20px);
     display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;gap:6px;
   }
-  .photo-slot .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  .photo-slot .tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
   .photo-slot p{font-size:12.5px;color:var(--mut);max-width:26ch;line-height:1.5}
 
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.6rem}
@@ -399,7 +399,7 @@
 
   .events{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;margin-top:1rem}
   .event{padding:1.2rem 1.3rem;border:1px solid var(--line);border-radius:2px}
-  .event .meta{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem}
+  .event .meta{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem}
   .event h3{font-size:.92rem;font-weight:600;margin-bottom:.35rem}
   .event p{font-size:.83rem;color:var(--mut);line-height:1.55}
   .photo-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2rem;align-items:start}
@@ -735,7 +735,7 @@
     <div class="wrap sec-grid">
       <div class="sec-label reveal">Advisory &amp; Consulting</div>
       <div class="reveal">
-        <div class="sec-head kinetic-head" style="margin-top:0">Where the engagement goes.</div>
+        <div class="sec-head kinetic-head" style="margin-top:0">Helping investors avoid bad decisions.</div>
         <div class="sec-body">
           <p>
             The work is analytical, not promotional. Clients are MoD procurement offices and
@@ -866,6 +866,14 @@
           <div class="swiper-wrapper">
             <div class="swiper-slide">
               <div class="press-card">
+                <div class="row"><span class="press-outlet">Via Satellite</span><span class="press-date">October 2026</span></div>
+                <p class="press-title">Russia&rsquo;s LEO Advances Put New Pressure on Europe to Bolster its Space Security</p>
+                <p class="press-desc">On why Europe&rsquo;s IRIS&sup2; may arrive too late against Russia&rsquo;s RASSVET constellation.</p>
+                <a class="press-link" href="https://www.satellitetoday.com/government-military/2026/10/07/russias-leo-advances-put-new-pressure-on-europe-to-bolster-its-space-security/" target="_blank" rel="noopener">Read &#8599;&#xFE0E;</a>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="press-card">
                 <div class="row"><span class="press-outlet">Financial Times</span><span class="press-date">June 2026</span></div>
                 <p class="press-title">Ukraine builds cheap alternative to US Patriot missiles</p>
                 <p class="press-desc">On why anti-ballistic interceptors are hard to test.</p>
@@ -957,11 +965,11 @@
       <div class="sec-body reveal">
         <div class="sec-head kinetic-head" style="margin-top:0;margin-bottom:8px">Get in touch.</div>
         <form class="contact-form" id="contactForm">
-          <label>Name<input type="text" name="name" autocomplete="name" required></label>
-          <label>Email<input type="email" name="email" autocomplete="email" required></label>
-          <label>Message<textarea name="message" rows="6" required></textarea></label>
+          <label>Name<input aria-label="Name" type="text" name="name" autocomplete="name" required></label>
+          <label>Email<input aria-label="Email" type="email" name="email" autocomplete="email" required></label>
+          <label>Message<textarea aria-label="Message" name="message" rows="6" required></textarea></label>
           <!-- robot filters: honeypot field (hidden from humans) + minimum-fill-time check -->
-          <label class="cf-hp" aria-hidden="true">Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          <label class="cf-hp" aria-hidden="true">Company<input aria-label="Company" type="text" name="company" tabindex="-1" autocomplete="off"></label>
           <button type="submit" class="cf-send">Send</button>
           <p class="cf-status" id="cfStatus" style="display:none;font-size:13px;color:var(--mut);margin:0" aria-live="polite"></p>
         </form>
